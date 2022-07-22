@@ -1,0 +1,118 @@
+#pragma once
+
+namespace rosa {
+using ObjectId = int;  // type aliasing, since we might change ObjectId composition
+}
+
+#include "shape.hpp"
+#include "position.hpp"
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+namespace rosa {
+
+class ObjectRegistry;
+class IntersectionInstance;
+
+class Object {
+public:
+    Object(const ObjectId& oid, const std::string& name, std::unique_ptr<Shape> &&shape, const Position &position, const std::shared_ptr<Object>& owner_object, const std::shared_ptr<ObjectRegistry>& registry);
+
+      virtual ~Object() = default;
+
+
+    const Shape& getShape() const { return *shape_.get(); }
+
+    /**
+     * @brief Adds the given object to the list of world's objects.
+     * 
+     * @param obj Object to be added. 
+     */
+    void addDependentObject(const std::shared_ptr<Object>& obj);
+
+    /**
+     * @brief Transitions the object and all its dependents to the next state.
+     * 
+     * @param delta_t Span of evolution in seconds.
+     * @return A map of all the new objects which are created by this object.
+        These new objects will be added to the list of dependent objects.
+     */
+    virtual std::unordered_map<ObjectId, std::shared_ptr<Object> > evolve(float delta_t);
+
+    /**
+     * @brief Registers this round's intersections.
+     * 
+     * if any infinitesimal intersection, calls handle_infinitesimal_intersection
+        to decide on the consequences in the current evolution cycle
+        note that the consequences on behavior of the robot will be handled in the 
+        next evolution cycle
+     * 
+     * @param intersections List of this round's intersections
+     */
+    void setIntersections(const std::vector<std::shared_ptr<IntersectionInstance> >& intersections);
+
+    /**
+     * @brief By default, we revert the position without reverting the rest of the state
+     */
+    void infinitesimalIntersectionImmediate();
+
+    /**
+     * @brief all changes to the position must go through this function
+        This is to ensure we keep the state. (# TODO how to enforce this?)
+     */
+    void updatePosition(const Position& new_position);
+
+    /**
+     * @brief TODO leaves the position and previous position the same.
+     * better to somehow invalidate previous position? (same should happen in
+     * constructor where these two are again the same)
+     */
+    void revertPosition();
+   
+
+    // def visualize(self) -> list:
+    //     """
+    //     """
+    //     position = [self.position.x, self.position.y ,self.position.phi]
+    //     return position
+
+
+    // def dump_shape_info(self):
+    //     if self.shape is None:
+    //         return None
+    //     return self.shape.dump_info()
+
+    virtual std::shared_ptr<Box> bounding_box() = 0;
+
+    /**
+     * @brief Returns the delta_t that this object requires to operate right.
+     * returns 0 if the objects declares no requirement.
+     */
+    float getRequiredDeltaT() const;
+        
+    /**
+     * @brief Checks if object must cease to exist in the next iteration of the world.
+     */
+    bool timeToDie() const;
+
+    /**
+     * @brief Checks if object should be evolved directly by the world.
+     */
+    bool isEvolvable() const;
+
+protected:
+    ObjectId oid_;
+    const std::string name_;
+    std::unique_ptr<Shape> shape_;
+    Position position_;
+    Position previousPosition_;
+    std::shared_ptr<Object> ownerObject_;
+    std::shared_ptr<ObjectRegistry> registry_;
+    std::unordered_map<ObjectId, std::shared_ptr<Object>> dependentObjects_;
+    std::vector<std::shared_ptr<IntersectionInstance> > latestIntersections_;
+    bool infinitesimalIntersectionOccured_;
+};
+
+} // namespace rosa
