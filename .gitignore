@@ -1,0 +1,15 @@
+# IDEA files
+.vscode
+.idea/
+
+# Byte-compiled / optimized / DLL files
+*.o
+__pycache__/
+*.py[cod]
+
+# CMake common files
+build/
+
+# OS specific files
+.DS_Store
+
