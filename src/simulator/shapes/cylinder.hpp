@@ -7,7 +7,7 @@ namespace rosa {
 
 class Box;
 
-class Cylinder: public Shape {
+class Cylinder : public Shape {
 public:
     Cylinder(float radius, float height);
 

@@ -4,7 +4,6 @@
 
 namespace rosa {
 
-class Robot: public Object {
-};
+class Robot : public Object {};
 
 } // namespace rosa

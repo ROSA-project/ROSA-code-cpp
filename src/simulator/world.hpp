@@ -17,15 +17,16 @@ namespace rosa {
  */
 class World {
 
-// type aliasing
-using InInType = std::unordered_map<ObjectId, std::vector<std::shared_ptr<IntersectionInstance> > >;
+    // type aliasing
+    using InInType =
+        std::unordered_map<ObjectId, std::vector<std::shared_ptr<IntersectionInstance>>>;
 
 public:
     World(const std::string& map_filename, const std::string& vis_filename);
 
     /**
      * World's main cycle.
-     * 
+     *
      * In each iteration, intersections of objects are computed and registered, and then
      * each object is evolved.
      */
@@ -51,15 +52,14 @@ private:
 
     // The time in msec between each two visualization frames.
     float visFrameIntervalMsec_;
-    
+
     // The time in which the next frame will be taken
     float nextFrameTimeMsec_;
 
-
     /**
      * Transitions the objects into next state.
-     * 
-     * @param delta_t Time difference between now and next state in seconds. 
+     *
+     * @param delta_t Time difference between now and next state in seconds.
      */
     void evolve(float delta_t);
 
@@ -70,15 +70,17 @@ private:
 
     /**
      * Computes the intersection of all pairs of objects.
-     * 
-     * @return <A, b>, where A is the list of intersections, and b is whether a non-infinitesimal intersection has occurred. 
+     *
+     * @return <A, b>, where A is the list of intersections, and b is whether a
+     * non-infinitesimal intersection has occurred.
      */
     std::pair<InInType, bool> intersect();
 
     /**
      * For each object with intersections, registers the list of its intersections.
-     * 
-     * @param intersection_result A map in which a list of IntersectionInstance objects is stored per object 
+     *
+     * @param intersection_result A map in which a list of IntersectionInstance objects is
+     * stored per object
      */
     void registerIntersections(const InInType& intersection_result);
 
@@ -87,7 +89,7 @@ private:
      */
     float pickDeltaT();
 
-        void updateVisualizationJson();
+    void updateVisualizationJson();
 
     /**
      * Dump visualization info for shapes to the output json file
@@ -98,14 +100,14 @@ private:
 
     /**
      * Sets position of the objects with moment (time).
-     * 
+     *
      * @return A map with ObjectID as key, and object's visualization info as value.
      */
     std::unordered_map<ObjectId, VisInfo> visualize();
 
     /**
      * Dump visualization info for Owners between objects to the output json file.
-     * 
+     *
      */
     void dumpAllOwnersInfo();
 };

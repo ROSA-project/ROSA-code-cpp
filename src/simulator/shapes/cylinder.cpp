@@ -3,14 +3,9 @@
 namespace rosa {
 
 Cylinder::Cylinder(float radius, float height)
-: radius_(radius)
-, height_(height)
-{
-}
+    : radius_(radius)
+    , height_(height) {}
 
-std::shared_ptr<Box> Cylinder::boundingBox(const Position& position) {
-    return nullptr;
-}
-
+std::shared_ptr<Box> Cylinder::boundingBox(const Position& position) { return nullptr; }
 
 } // namespace rosa

@@ -7,7 +7,6 @@ namespace rosa {
 /**
  * To be used as the light beam (or whatever) used by the distance measuring sensors
  */
-class Beam: public NonPhysicalObject {
-};
+class Beam : public NonPhysicalObject {};
 
 } // namespace rosa

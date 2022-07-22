@@ -1,11 +1,11 @@
 #pragma once
 
 namespace rosa {
-using ObjectId = int;  // type aliasing, since we might change ObjectId composition
+using ObjectId = int; // type aliasing, since we might change ObjectId composition
 }
 
-#include "shape.hpp"
 #include "position.hpp"
+#include "shape.hpp"
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -18,40 +18,43 @@ class IntersectionInstance;
 
 class Object {
 public:
-    Object(const ObjectId& oid, const std::string& name, std::unique_ptr<Shape> &&shape, const Position &position, const std::shared_ptr<Object>& owner_object, const std::shared_ptr<ObjectRegistry>& registry);
+    Object(const ObjectId& oid,
+           const std::string& name,
+           std::unique_ptr<Shape>&& shape,
+           const Position& position,
+           const std::shared_ptr<Object>& owner_object,
+           const std::shared_ptr<ObjectRegistry>& registry);
 
-      virtual ~Object() = default;
-
+    virtual ~Object() = default;
 
     const Shape& getShape() const { return *shape_.get(); }
 
     /**
      * Adds the given object to the list of world's objects.
-     * 
-     * @param obj Object to be added. 
+     *
+     * @param obj Object to be added.
      */
     void addDependentObject(const std::shared_ptr<Object>& obj);
 
     /**
      * Transitions the object and all its dependents to the next state.
-     * 
+     *
      * @param delta_t Span of evolution in seconds.
-     * @return A map of all the new objects which are created by this object.
-        These new objects will be added to the list of dependent objects.
+     * @return A map of all the new objects which are created by this object. These new
+     * objects will be added to the list of dependent objects.
      */
-    virtual std::unordered_map<ObjectId, std::shared_ptr<Object> > evolve(float delta_t);
+    virtual std::unordered_map<ObjectId, std::shared_ptr<Object>> evolve(float delta_t);
 
     /**
-     * Registers this round's intersections.
-     * 
-     * if any infinitesimal intersection, calls handle_infinitesimal_intersection
-        to decide on the consequences in the current evolution cycle
-        note that the consequences on behavior of the robot will be handled in the 
-        next evolution cycle
-     * 
+     * Registers this round's intersections. If any infinitesimal intersection, calls
+     * handle_infinitesimal_intersection to decide on the consequences in the current
+     * evolution cycle note that the consequences on behavior of the robot will be handled
+     * in the next evolution cycle
+     *
      * @param intersections List of this round's intersections
      */
-    void setIntersections(const std::vector<std::shared_ptr<IntersectionInstance> >& intersections);
+    void setIntersections(
+        const std::vector<std::shared_ptr<IntersectionInstance>>& intersections);
 
     /**
      * By default, we revert the position without reverting the rest of the state
@@ -70,7 +73,6 @@ public:
      * constructor where these two are again the same)
      */
     void revertPosition();
-   
 
     // def visualize(self) -> list:
     //     """
@@ -78,20 +80,19 @@ public:
     //     position = [self.position.x, self.position.y ,self.position.phi]
     //     return position
 
-
     // def dump_shape_info(self):
     //     if self.shape is None:
     //         return None
     //     return self.shape.dump_info()
 
-    virtual std::shared_ptr<Box> bounding_box() = 0;
+    virtual std::shared_ptr<Box> boundingBox() = 0;
 
     /**
      * Returns the delta_t that this object requires to operate right.
      * returns 0 if the objects declares no requirement.
      */
     float getRequiredDeltaT() const;
-        
+
     /**
      * Checks if object must cease to exist in the next iteration of the world.
      */
@@ -111,7 +112,7 @@ protected:
     std::shared_ptr<Object> ownerObject_;
     std::shared_ptr<ObjectRegistry> registry_;
     std::unordered_map<ObjectId, std::shared_ptr<Object>> dependentObjects_;
-    std::vector<std::shared_ptr<IntersectionInstance> > latestIntersections_;
+    std::vector<std::shared_ptr<IntersectionInstance>> latestIntersections_;
     bool infinitesimalIntersectionOccured_;
 };
 
