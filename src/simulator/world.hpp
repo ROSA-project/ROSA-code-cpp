@@ -24,7 +24,7 @@ public:
     World(const std::string& map_filename, const std::string& vis_filename);
 
     /**
-     * @brief World's main cycle.
+     * World's main cycle.
      * 
      * In each iteration, intersections of objects are computed and registered, and then
      * each object is evolved.
@@ -57,54 +57,54 @@ private:
 
 
     /**
-     * @brief Transitions the objects into next state.
+     * Transitions the objects into next state.
      * 
      * @param delta_t Time difference between now and next state in seconds. 
      */
     void evolve(float delta_t);
 
     /**
-     * @brief Removes objects which are supposed to die in this iteration.
+     * Removes objects which are supposed to die in this iteration.
      */
     void deleteExpiredObjects();
 
     /**
-     * @brief Computes the intersection of all pairs of objects.
+     * Computes the intersection of all pairs of objects.
      * 
      * @return <A, b>, where A is the list of intersections, and b is whether a non-infinitesimal intersection has occurred. 
      */
     std::pair<InInType, bool> intersect();
 
     /**
-     * @brief For each object with intersections, registers the list of its intersections.
+     * For each object with intersections, registers the list of its intersections.
      * 
      * @param intersection_result A map in which a list of IntersectionInstance objects is stored per object 
      */
     void registerIntersections(const InInType& intersection_result);
 
     /**
-     * @brief Returns a delta_t for the current cycle.
+     * Returns a delta_t for the current cycle.
      */
     float pickDeltaT();
 
         void updateVisualizationJson();
 
     /**
-     * @brief Dump visualization info for shapes to the output json file
+     * Dump visualization info for shapes to the output json file
      */
     void dumpAllShapesInfo();
 
     void dumpVisDataToFile();
 
     /**
-     * @brief Sets position of the objects with moment (time).
+     * Sets position of the objects with moment (time).
      * 
      * @return A map with ObjectID as key, and object's visualization info as value.
      */
     std::unordered_map<ObjectId, VisInfo> visualize();
 
     /**
-     * @brief Dump visualization info for Owners between objects to the output json file.
+     * Dump visualization info for Owners between objects to the output json file.
      * 
      */
     void dumpAllOwnersInfo();

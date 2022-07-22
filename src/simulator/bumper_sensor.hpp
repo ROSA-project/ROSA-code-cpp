@@ -5,7 +5,7 @@
 namespace rosa {
 
 /**
- * @brief Object without physical existence, its intersection with other objects does not cause bumps. 
+ * Object without physical existence, its intersection with other objects does not cause bumps. 
  */
 class BumperSensor: public Sensor {
     virtual bool sense() override {

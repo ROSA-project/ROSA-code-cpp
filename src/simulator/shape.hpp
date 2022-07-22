@@ -12,7 +12,7 @@ public:
     virtual ~Shape() = default;
 
     /**
-     * @brief Returns smallest enclosing upright Box
+     * Returns smallest enclosing upright Box
      * 
      * @param position Current position of the shape
      * @return A shred pointer to the resulting enclosing box
@@ -21,7 +21,7 @@ public:
 
 
     /**
-     * @brief Returns the shape info needed for visualization 
+     * Returns the shape info needed for visualization 
      * 
      * @return A dictionary with two keys: "type" is the shape's name, and
      *         "dimension" is a list of dimension numbers.
