@@ -103,6 +103,7 @@ private:
      *
      * @return A map with ObjectID as key, and object's visualization info as value.
      */
+    class VisInfo;
     std::unordered_map<ObjectId, VisInfo> visualize();
 
     /**

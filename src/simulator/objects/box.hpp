@@ -19,7 +19,11 @@ public:
         const std::shared_ptr<Object>& owner_object,
         std::shared_ptr<ObjectRegistry>& registry)
         : Object(oid, name, std::move(cube), position, owner_object, registry) {}
-    virtual std::shared_ptr<Box> bounding_box() { return nullptr; }
+    
+    virtual std::shared_ptr<Box> boundingBox() override { return nullptr; }
+
+private:
+    const Cube& getShape() const { *(Cube*)shape_.get(); }
 };
 
 } // namespace rosa

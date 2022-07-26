@@ -1,4 +1,4 @@
-#include "physical_object.hpp"
+#include "rigid_physical_obj.hpp"
 #include "utils/constants.hpp" // PI_CONST
 #include <cmath>
 
@@ -8,10 +8,11 @@ RigidPhysicalObject::RigidPhysicalObject(const ObjectId& oid,
                                          const std::string& name,
                                          std::unique_ptr<Shape>&& shape,
                                          const Position& position,
-                                         float acceleration,
-                                         float velocity,
                                          const std::shared_ptr<Object>& owner_object,
-                                         const std::shared_ptr<ObjectRegistry>& registry)
+                                         const std::shared_ptr<ObjectRegistry>& registry,
+                                         float acceleration,
+                                         float velocity
+)
     : Object(oid, name, std::move(shape), position, owner_object, registry)
     , acceleration_(acceleration)
     , velocity_(velocity) {}
@@ -29,8 +30,6 @@ RigidPhysicalObject::evolve(float delta_t) {
     }
 
     auto r = velocity_ * delta_t;
-    double sin(double x);
-
     new_position.x += r * cos(new_position.phi * PI_CONST / 180);
     new_position.y += r * sin(new_position.phi * PI_CONST / 180);
     updatePosition(new_position);

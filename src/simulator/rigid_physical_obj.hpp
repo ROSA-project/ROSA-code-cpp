@@ -18,10 +18,10 @@ public:
                         const std::string& name,
                         std::unique_ptr<Shape>&& shape,
                         const Position& position,
-                        float acceleration,
-                        float velocity,
                         const std::shared_ptr<Object>& owner_object,
-                        const std::shared_ptr<ObjectRegistry>& registry);
+                        const std::shared_ptr<ObjectRegistry>& registry,
+                        float acceleration,
+                        float velocity);
 
     /**
      * Overriding that of Object. A RigidPhysicalObject basically keeps moving based on
@@ -43,7 +43,9 @@ public:
      */
     virtual Position newPositionUponBump() = 0;
 
-private:
+    virtual float getRequiredDeltaT() const = 0;
+
+protected:
     float acceleration_;
     float velocity_;
 };

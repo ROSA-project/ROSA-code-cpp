@@ -30,11 +30,17 @@ public:
         return isInfinitesimal_;
     }
 
+    const std::vector<Position>& getIntersectionPoint() {
+        rosa_assert(intersectionPoints_, "no intersection recorded., the method must not have been called");
+        return intersectionPoints_;
+    }
+
 private:
     const Object& obj1_;
     const Object& obj2_;
     bool doesIntersect_{false};
     bool isInfinitesimal_{false};
+    std::vector<Position> intersectionPoints_; // TODO: not sure about the type of this
 };
 
 } // namespace rosa

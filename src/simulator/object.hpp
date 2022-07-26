@@ -91,7 +91,7 @@ public:
      * Returns the delta_t that this object requires to operate right.
      * returns 0 if the objects declares no requirement.
      */
-    float getRequiredDeltaT() const;
+    virtual float getRequiredDeltaT() const;
 
     /**
      * Checks if object must cease to exist in the next iteration of the world.

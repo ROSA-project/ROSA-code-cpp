@@ -1,4 +1,6 @@
 #include "world.hpp"
+#include "map.hpp"
+#include <algorithm>
 #include <ctime>
 
 namespace rosa {
@@ -15,8 +17,8 @@ World::World(const std::string& map_filename, const std::string& vis_filename)
     registry_ = std::make_shared<ObjectRegistry>();
 
     // Parse input map
-    map_ = std::make_shared<Map>(registry_);
-    map_.parse_map(map_filename);
+    Map map(registry_);
+    map.parseMap(map_filename);
 }
 
 void World::evolve(float delta_t) {
@@ -84,14 +86,14 @@ void World::registerIntersections(const World::InInType& intersection_result) {
     }
 }
 
-// def pick_delta_t(self) -> float:
-//     """Returns a delta_t for the current cycle
-//     """
-//     # TODO: For now, we will only  run the world for one round
-//     delta_t_list = [self.__duration_sec + 1]
-//     for oid in self.registry.get_objects():
-//         delta_t_list.append(self.registry.get_objects()[oid].get_required_delta_t())
-//     return float(min(set(delta_t_list) - {0}))
+float World::pickDeltaT() {
+    // TODO: For now, we will only  run the world for one round
+    float new_dt = durationSec_ + 1;
+    for (auto &p: registry_->getObjects()) {
+        new_dt = std::min(new_dt, p.second->getRequiredDeltaT());
+    }
+    return new_dt;
+}
 
 // def run(self) -> None:
 //     """World's main cycle.
