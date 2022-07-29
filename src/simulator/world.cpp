@@ -79,7 +79,6 @@ std::pair<World::InInType, bool> World::intersect() {
         break;
     }
     return std::make_pair(result, non_infinitesimal_intersect);
-
 }
 
 void World::registerIntersections(const World::InInType& intersection_result) {
@@ -92,7 +91,7 @@ void World::registerIntersections(const World::InInType& intersection_result) {
 float World::pickDeltaT() {
     // TODO: For now, we will only  run the world for one round
     float new_dt = durationSec_ + 1;
-    for (auto &p: registry_->getObjects()) {
+    for (auto& p: registry_->getObjects()) {
         new_dt = std::min(new_dt, p.second->getRequiredDeltaT());
     }
     return new_dt;
@@ -101,7 +100,7 @@ float World::pickDeltaT() {
 void World::run() {
     // The json object containing data to be used by the visualizer
     nlohmann::json vis_json;
-    
+
     float last_progress = 0;
     while (currentTime_ < durationSec_) {
         auto delta_t = pickDeltaT();
@@ -110,16 +109,20 @@ void World::run() {
             last_progress = progress;
             // TODO: print(str(current_percentage) + "% processed")
         }
-        
-        // TODO: logger.Logger.add_line("at t = " + str(self.__current_time_ms) + ", " "picked delta_t = " + str(delta_t))
+
+        // TODO: logger.Logger.add_line("at t = " + str(self.__current_time_ms) + ", "
+        // "picked delta_t = " + str(delta_t))
         evolve(delta_t);
         auto [intersection_result, non_inf_intersect] = intersect();
         if (non_inf_intersect) {
-            // TODO: print("non-infinitesimal_intersection happened! exiting simulation loop")
+            // TODO: print("non-infinitesimal_intersection happened! exiting simulation
+            // loop")
             break;
         }
 
-        // Passes intersection result to the objects where the info will be used by object to handle possible intersection consequences. (differentiate this from object evolution)
+        // Passes intersection result to the objects where the info will be used by object
+        // to handle possible intersection consequences. (differentiate this from object
+        // evolution)
         registerIntersections(intersection_result);
 
         updateVisualizationJson(vis_json);
@@ -132,26 +135,27 @@ void World::run() {
     writeVisDataToFile(vis_json);
 }
 
-void World::updateVisualizationJson(nlohmann::json &vis_json) {
+void World::updateVisualizationJson(nlohmann::json& vis_json) {
     std::stringstream key_stream;
     while (currentTime_ >= nextFrameTimeMsec_) {
-        key_stream << std::fixed << std::setprecision(VIZ_DECIMAL_LENGTH) << nextFrameTimeMsec_;
+        key_stream << std::fixed << std::setprecision(VIZ_DECIMAL_LENGTH)
+                   << nextFrameTimeMsec_;
         std::string key = key_stream.str();
         vis_json[key] = nlohmann::json({});
 
         // Populate with objects vis info
-        for (auto &p: registry_->getObjects()) {
+        for (auto& p: registry_->getObjects()) {
             vis_json[key][p.first] = p.second->visualize();
         }
         nextFrameTimeMsec_ += visFrameIntervalMsec_;
     }
 }
 
-void World::dumpObjectInfo(nlohmann::json &vis_json) {
+void World::dumpObjectInfo(nlohmann::json& vis_json) {
     // Dump shapes and owners info.
     vis_json["shapes"] = nlohmann::json({});
     vis_json["owners"] = nlohmann::json({});
-    for (auto &p: registry_->getObjects()) {
+    for (auto& p: registry_->getObjects()) {
         vis_json["shapes"][p.first] = p.second->dumpShapeInfo();
         if (auto owner = p.second->getOwnerObject().lock()) {
             vis_json["owners"][p.first] = std::to_string(owner->getObjectId());
@@ -159,10 +163,9 @@ void World::dumpObjectInfo(nlohmann::json &vis_json) {
     }
 }
 
-void World::writeVisDataToFile(nlohmann::json &vis_json) {
+void World::writeVisDataToFile(nlohmann::json& vis_json) {
     std::ofstream file(visOutputFilename_);
     file << vis_json;
 }
-
 
 } // namespace rosa

@@ -4,7 +4,6 @@
 #include <cmath>
 #include <tuple>
 
-
 namespace rosa {
 
 struct Position {
@@ -20,8 +19,8 @@ struct Position {
         , phi(y)
         , theta(y) {}
 
-    
-    static std::tuple<float, float, float> polarToCartesian(float r, float phi, float theta) {
+    static std::tuple<float, float, float>
+    polarToCartesian(float r, float phi, float theta) {
         float x = r * sin(theta * PI_CONST / 180) * cos(phi * PI_CONST / 180);
         float y = r * sin(theta * PI_CONST / 180) * sin(phi * PI_CONST / 180);
         float z = r * cos(theta * PI_CONST / 180);

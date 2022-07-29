@@ -11,8 +11,7 @@ RigidPhysicalObject::RigidPhysicalObject(const ObjectId& oid,
                                          const std::weak_ptr<Object>& owner_object,
                                          const std::shared_ptr<ObjectRegistry>& registry,
                                          float acceleration,
-                                         float velocity
-)
+                                         float velocity)
     : Object(oid, name, std::move(shape), position, owner_object, registry)
     , acceleration_(acceleration)
     , velocity_(velocity) {}

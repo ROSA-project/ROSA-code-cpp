@@ -34,13 +34,14 @@ public:
     const std::string& getName() const { return name_; }
 
     const Shape& getShape() const { return *shape_.get(); }
-    
+
     const Position& getPosition() const { return position_; }
-    
+
     const std::weak_ptr<Object> getOwnerObject() const { return ownerObject_; }
 
     /**
-     * Sets the Owner object, in case this information was not available at the time of construction.  
+     * Sets the Owner object, in case this information was not available at the time of
+     * construction.
      */
     void setOwner(const std::weak_ptr<Object>& owner_object);
 
@@ -124,8 +125,9 @@ protected:
     std::unique_ptr<Shape> shape_;
     Position position_;
     Position previousPosition_;
-    // weak_ptr to avoid reference cycles (having both parent to child, and child to parent references), which may result in memory leak.
-    std::weak_ptr<Object> ownerObject_; 
+    // weak_ptr to avoid reference cycles (having both parent to child, and child to
+    // parent references), which may result in memory leak.
+    std::weak_ptr<Object> ownerObject_;
     std::shared_ptr<ObjectRegistry> registry_;
     std::unordered_map<ObjectId, std::shared_ptr<Object>> dependentObjects_;
     std::vector<std::shared_ptr<IntersectionInstance>> latestIntersections_;

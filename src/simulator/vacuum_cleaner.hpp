@@ -13,16 +13,17 @@
 
 namespace rosa {
 
-// Note: This class inherits from enable_shared_from_this in order to create weak_ptrs from "this" pointer. This is needed when creating the sensor object.
+// Note: This class inherits from enable_shared_from_this in order to create weak_ptrs
+// from "this" pointer. This is needed when creating the sensor object.
 
-class VacuumCleaner: public Robot, public std::enable_shared_from_this<VacuumCleaner> {
+class VacuumCleaner : public Robot, public std::enable_shared_from_this<VacuumCleaner> {
 public:
     VacuumCleaner(const ObjectId& oid,
-           const std::string& name,
-           std::unique_ptr<Cylinder>&& shape,
-           const Position& position,
-           const std::weak_ptr<Object>& owner_object,
-           const std::shared_ptr<ObjectRegistry>& registry);
+                  const std::string& name,
+                  std::unique_ptr<Cylinder>&& shape,
+                  const Position& position,
+                  const std::weak_ptr<Object>& owner_object,
+                  const std::shared_ptr<ObjectRegistry>& registry);
 
     void initializeSensor();
 
@@ -31,11 +32,7 @@ public:
     virtual float getRequiredDeltaT() const override;
 
 private:
-    enum PositionState {
-        FORWARD,
-        REVERSE,
-        TURN_LEFT
-    };
+    enum PositionState { FORWARD, REVERSE, TURN_LEFT };
 
     bool isInitialized_;
     std::shared_ptr<BumperSensor> sensor_;

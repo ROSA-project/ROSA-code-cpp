@@ -18,13 +18,11 @@ Object::Object(const ObjectId& oid,
     , ownerObject_(owner_object)
     , registry_(registry)
     , infinitesimalIntersectionOccured_(false)
-    , evolvable_(ownerObject_.lock() ? false : true) {
-}
+    , evolvable_(ownerObject_.lock() ? false : true) {}
 
 void Object::setOwner(const std::weak_ptr<Object>& owner_object) {
     ownerObject_ = owner_object;
 }
-
 
 void Object::addDependentObject(const std::shared_ptr<Object>& obj) {
     dependentObjects_[obj->oid_] = obj;

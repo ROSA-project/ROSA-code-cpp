@@ -2,13 +2,12 @@
 
 // import time
 #include "intersection_instance.hpp"
+#include "nlohmann/json.hpp"
 #include "object.hpp"
 #include "object_registry.hpp"
 #include "position.hpp"
-#include "nlohmann/json.hpp"
 #include <unordered_map>
 #include <vector>
-
 
 namespace rosa {
 
@@ -90,14 +89,14 @@ private:
      */
     float pickDeltaT();
 
-    void updateVisualizationJson(nlohmann::json &json);
+    void updateVisualizationJson(nlohmann::json& json);
 
     /**
      * Dump visualization info for shapes to the output json file
      */
-    void dumpObjectInfo(nlohmann::json &vis_json);
+    void dumpObjectInfo(nlohmann::json& vis_json);
 
-    void writeVisDataToFile(nlohmann::json &vis_json);
+    void writeVisDataToFile(nlohmann::json& vis_json);
 };
 
 } // namespace rosa
