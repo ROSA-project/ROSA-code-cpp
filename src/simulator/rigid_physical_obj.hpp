@@ -18,7 +18,7 @@ public:
                         const std::string& name,
                         std::unique_ptr<Shape>&& shape,
                         const Position& position,
-                        const std::shared_ptr<Object>& owner_object,
+                        const std::weak_ptr<Object>& owner_object,
                         const std::shared_ptr<ObjectRegistry>& registry,
                         float acceleration,
                         float velocity);
@@ -32,8 +32,7 @@ public:
      * @return A map of all the new objects which are created by this object.
         These new objects will be added to the list of dependent objects.
      */
-    virtual std::unordered_map<ObjectId, std::shared_ptr<Object>>
-    evolve(float delta_t) override;
+    virtual ObjectMap evolve(float delta_t) override;
 
     /**
      * Calculates the new motion state.
@@ -43,7 +42,7 @@ public:
      */
     virtual Position newPositionUponBump() = 0;
 
-    virtual float getRequiredDeltaT() const = 0;
+    virtual float getRequiredDeltaT() const override = 0;
 
 protected:
     float acceleration_;

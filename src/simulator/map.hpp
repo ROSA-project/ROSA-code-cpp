@@ -1,12 +1,9 @@
 #pragma once
 
-#include "ball.hpp"
-#include "cube.hpp"
-#include "cylinder.hpp"
 #include "object.hpp"
-#include "object_registery.hpp"
+#include "object_registry.hpp"
 #include "position.hpp"
-#include "vacuum_cleaner.hpp"
+#include "nlohmann/json.hpp"
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -15,7 +12,7 @@ namespace rosa {
 
 class Map {
 public:
-    Map::Map();
+    Map();
     
     /**
      * Loads the input json file and creates the objects.
@@ -25,17 +22,23 @@ public:
      */
     std::shared_ptr<ObjectRegistry> parseMap(const std::string& map_filename);
 
-    std::shared_ptr<Object> instantiateObject(obj_json, ObjectId new_id, const std::string& name, std::shared_ptr<Object>  owner);
-
-    static std::shared_ptr<Shape> getShape(obj_json);
-
-    static Position getPosition(obj_json);
-
-    const std::unordered_map<ObjectId, std::shared_ptr<Object>>& getObjects(parsed, std::shared_ptr<Object> owner);
-
 private:
     ObjectId nextAvailableId_;
     std::shared_ptr<ObjectRegistry> registry_;
+
+    
+    // --- METHODS ---
+
+    /**
+     * stores a dictionary of objects at this current level (and not deeper)
+     */
+    const Object::ObjectMap& getObjects(std::shared_ptr<ObjectRegistry> registry, Object::ObjectMap& obj_map, const nlohmann::json &json, std::shared_ptr<Object> owner);
+
+    std::shared_ptr<Object> instantiateObject(std::shared_ptr<ObjectRegistry> registry, const nlohmann::json &json, ObjectId new_id, const std::string& name, std::shared_ptr<Object>  owner);
+
+    static Shape* getShape(const nlohmann::json &json);
+
+    static Position getPosition(const nlohmann::json &json);
 };
 
 } // namespace rosa

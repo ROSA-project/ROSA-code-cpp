@@ -3,7 +3,7 @@
 #include "object.hpp"
 #include "object_registry.hpp"
 #include "position.hpp"
-#include "shapes/cube.hpp"
+#include "cube.hpp"
 
 #include <memory>
 #include <string>
@@ -23,7 +23,7 @@ public:
     virtual std::shared_ptr<Box> boundingBox() override { return nullptr; }
 
 private:
-    const Cube& getShape() const { *(Cube*)shape_.get(); }
+    const Cube& getShape() const { return *(Cube*)shape_.get(); }
 };
 
 } // namespace rosa

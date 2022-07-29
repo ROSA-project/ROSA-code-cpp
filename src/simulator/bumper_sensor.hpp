@@ -9,6 +9,10 @@ namespace rosa {
  * bumps.
  */
 class BumperSensor : public Sensor {
+public:
+    // Inherit Sensor's constructor
+    using Sensor::Sensor;
+
     virtual bool sense() override { return infinitesimalIntersectionOccured_; }
 };
 

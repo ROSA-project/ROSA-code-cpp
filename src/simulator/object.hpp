@@ -18,16 +18,31 @@ class IntersectionInstance;
 
 class Object {
 public:
+    using ObjectMap = std::unordered_map<ObjectId, std::shared_ptr<Object>>;
+
     Object(const ObjectId& oid,
            const std::string& name,
            std::unique_ptr<Shape>&& shape,
            const Position& position,
-           const std::shared_ptr<Object>& owner_object,
+           const std::weak_ptr<Object>& owner_object,
            const std::shared_ptr<ObjectRegistry>& registry);
 
     virtual ~Object() = default;
 
+    const ObjectId getObjectId() const { return oid_; }
+
+    const std::string& getName() const { return name_; }
+
     const Shape& getShape() const { return *shape_.get(); }
+    
+    const Position& getPosition() const { return position_; }
+    
+    const std::weak_ptr<Object> getOwnerObject() const { return ownerObject_; }
+
+    /**
+     * Sets the Owner object, in case this information was not available at the time of construction.  
+     */
+    void setOwner(const std::weak_ptr<Object>& owner_object);
 
     /**
      * Adds the given object to the list of world's objects.
@@ -43,7 +58,7 @@ public:
      * @return A map of all the new objects which are created by this object. These new
      * objects will be added to the list of dependent objects.
      */
-    virtual std::unordered_map<ObjectId, std::shared_ptr<Object>> evolve(float delta_t);
+    virtual ObjectMap evolve(float delta_t);
 
     /**
      * Registers this round's intersections. If any infinitesimal intersection, calls
@@ -85,7 +100,7 @@ public:
     //         return None
     //     return self.shape.dump_info()
 
-    virtual std::shared_ptr<Box> boundingBox() = 0;
+    virtual std::shared_ptr<Box> boundingBox() { return std::shared_ptr<Box>(nullptr); }
 
     /**
      * Returns the delta_t that this object requires to operate right.
@@ -109,11 +124,14 @@ protected:
     std::unique_ptr<Shape> shape_;
     Position position_;
     Position previousPosition_;
-    std::shared_ptr<Object> ownerObject_;
+    // weak_ptr to avoid reference cycles (having both parent to child, and child to parent references), which may result in memory leak.
+    std::weak_ptr<Object> ownerObject_; 
     std::shared_ptr<ObjectRegistry> registry_;
     std::unordered_map<ObjectId, std::shared_ptr<Object>> dependentObjects_;
     std::vector<std::shared_ptr<IntersectionInstance>> latestIntersections_;
     bool infinitesimalIntersectionOccured_;
+    // Object is evolvable only if it has no owner.
+    bool evolvable_;
 };
 
 } // namespace rosa

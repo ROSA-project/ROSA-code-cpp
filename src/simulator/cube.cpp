@@ -1,5 +1,5 @@
 #include "cube.hpp"
-#include "objects/box.hpp"
+#include "box.hpp"
 
 namespace rosa {
 

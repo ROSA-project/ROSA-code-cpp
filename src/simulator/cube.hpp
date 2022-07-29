@@ -13,7 +13,7 @@ public:
 
     std::shared_ptr<Box> boundingBox(const Position& position) override;
 
-    float getLength() const { return radius_; }
+    float getLength() const { return length_; }
 
     float getHeight() const { return height_; }
 

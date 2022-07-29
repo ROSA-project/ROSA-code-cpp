@@ -8,7 +8,7 @@ RigidPhysicalObject::RigidPhysicalObject(const ObjectId& oid,
                                          const std::string& name,
                                          std::unique_ptr<Shape>&& shape,
                                          const Position& position,
-                                         const std::shared_ptr<Object>& owner_object,
+                                         const std::weak_ptr<Object>& owner_object,
                                          const std::shared_ptr<ObjectRegistry>& registry,
                                          float acceleration,
                                          float velocity
@@ -17,8 +17,7 @@ RigidPhysicalObject::RigidPhysicalObject(const ObjectId& oid,
     , acceleration_(acceleration)
     , velocity_(velocity) {}
 
-std::unordered_map<ObjectId, std::shared_ptr<Object>>
-RigidPhysicalObject::evolve(float delta_t) {
+Object::ObjectMap RigidPhysicalObject::evolve(float delta_t) {
     Position new_position;
     if (infinitesimalIntersectionOccured_) {
         // This is a bump which affects object's movement in this cycle

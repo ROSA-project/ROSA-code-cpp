@@ -1,7 +1,9 @@
 #include "world.hpp"
 #include "map.hpp"
+#include "utils/constants.hpp"
 #include <algorithm>
 #include <ctime>
+#include <fstream>
 
 namespace rosa {
 
@@ -14,18 +16,16 @@ World::World(const std::string& map_filename, const std::string& vis_filename)
     , nextFrameTimeMsec_(0) {
     // TODO hardcoded parameters in this ctor, to be taken care of properly
 
-    registry_ = std::make_shared<ObjectRegistry>();
-
     // Parse input map
-    Map map(registry_);
-    map.parseMap(map_filename);
+    Map map;
+    registry_ = map.parseMap(map_filename);
 }
 
 void World::evolve(float delta_t) {
     auto& objs = registry_->getObjects();
     for (auto& p: objs) {
         if (p.second->isEvolvable()) {
-            auto& offspring_objects = p.second->evolve(delta_t);
+            auto offspring_objects = p.second->evolve(delta_t);
             registry_->addObjects(offspring_objects);
             // TODO these newly added objects don't get an evolve() in this round?
         }
@@ -75,14 +75,17 @@ std::pair<World::InInType, bool> World::intersect() {
                 }
             }
         }
-        return std::make_pair(result, non_infinitesimal_intersect);
+        // TODO: break here? this function may require a restructuring.
+        break;
     }
+    return std::make_pair(result, non_infinitesimal_intersect);
+
 }
 
 void World::registerIntersections(const World::InInType& intersection_result) {
     auto& objects = registry_->getObjects();
     for (auto& p: intersection_result) {
-        objects[p.first].setIntersections(p.second);
+        objects[p.first]->setIntersections(p.second);
     }
 }
 
@@ -95,91 +98,71 @@ float World::pickDeltaT() {
     return new_dt;
 }
 
-// def run(self) -> None:
-//     """World's main cycle.
+void World::run() {
+    // The json object containing data to be used by the visualizer
+    nlohmann::json vis_json;
+    
+    float last_progress = 0;
+    while (currentTime_ < durationSec_) {
+        auto delta_t = pickDeltaT();
+        auto progress = currentTime_ / durationSec_ * 100;
+        if (progress > last_progress) {
+            last_progress = progress;
+            // TODO: print(str(current_percentage) + "% processed")
+        }
+        
+        // TODO: logger.Logger.add_line("at t = " + str(self.__current_time_ms) + ", " "picked delta_t = " + str(delta_t))
+        evolve(delta_t);
+        auto [intersection_result, non_inf_intersect] = intersect();
+        if (non_inf_intersect) {
+            // TODO: print("non-infinitesimal_intersection happened! exiting simulation loop")
+            break;
+        }
 
-//     In each iteration, intersections of objects are computed and registered, and then
-//     each object is evolved.
-//     """
-//     non_infinitesimal_intersection_exists: bool = False
-//     current_percentage = 0
-//     while self.__current_time_ms < self.__duration_sec:
-//         delta_t = self.pick_delta_t()
-//         if int(self.__current_time_ms / self.__duration_sec * 100) >
-//         current_percentage:
-//             current_percentage = int(self.__current_time_ms / self.__duration_sec *
-//             100) print(str(current_percentage) + "% processed")
-//         logger.Logger.add_line("at t = " + str(self.__current_time_ms) + ", "
-//                                                                             "picked
-//                                                                             delta_t = "
-//                                                                             +
-//                                                                             str(delta_t))
-//         self.evolve(delta_t)
-//         intersection_result, non_infinitesimal_intersection_exists = self.intersect()
-//         # TODO I don't want to assert so I can see the output :D assert kills the
-//         wrapper # assert(not non_infinitesimal_intersection_exists) if
-//         non_infinitesimal_intersection_exists:
-//             print("non-infinitesimal_intersection happened! exiting simulation loop")
-//             break
+        // Passes intersection result to the objects where the info will be used by object to handle possible intersection consequences. (differentiate this from object evolution)
+        registerIntersections(intersection_result);
 
-//         # passes intersection result to the objects
-//         # where the info will be used by object to handle possible intersection
-//         # consequences. (differentiate this from object evolution)
-//         self.register_intersections(intersection_result)
+        updateVisualizationJson(vis_json);
 
-//         self.update_visualization_json()
+        currentTime_ += delta_t;
+        numEvolutions_ += 1;
+    }
 
-//         self.__current_time_ms = self.__current_time_ms + delta_t
-//         self.__num_evolutions += 1
+    dumpObjectInfo(vis_json);
+    writeVisDataToFile(vis_json);
+}
 
-//     self.dump_all_shapes_info()
-//     self.dump_all_owners_info()
-//     self.dump_vis_data_to_file()
+void World::updateVisualizationJson(nlohmann::json &vis_json) {
+    std::stringstream key_stream;
+    while (currentTime_ >= nextFrameTimeMsec_) {
+        key_stream << std::fixed << std::setprecision(VIZ_DECIMAL_LENGTH) << nextFrameTimeMsec_;
+        std::string key = key_stream.str();
+        vis_json[key] = nlohmann::json({});
 
-// def update_visualization_json(self):
-//     step_round = 3
-//     while self.__current_time_ms >= self.__next_frame_time_msec:
-//         key = ("{:." + str(step_round) + "f}").format(self.__next_frame_time_msec)
-//         self.__vis_data[key] = self.visualize()
-//         self.__next_frame_time_msec += self.__vis_frame_interval_ms
+        // Populate with objects vis info
+        for (auto &p: registry_->getObjects()) {
+            vis_json[key][p.first] = p.second->visualize();
+        }
+        nextFrameTimeMsec_ += visFrameIntervalMsec_;
+    }
+}
 
-// def dump_all_shapes_info(self):
-//     # dump visualization info for shapes to the output json file
-//     shapes_info_dict = {"shapes": {}}
-//     for oid in self.registry.get_objects():
-//         shapes_info_dict["shapes"][oid] =
-//         self.registry.get_objects()[oid].dump_shape_info()
-//     self.__vis_data.update(shapes_info_dict)
+void World::dumpObjectInfo(nlohmann::json &vis_json) {
+    // Dump shapes and owners info.
+    vis_json["shapes"] = nlohmann::json({});
+    vis_json["owners"] = nlohmann::json({});
+    for (auto &p: registry_->getObjects()) {
+        vis_json["shapes"][p.first] = p.second->dumpShapeInfo();
+        if (auto owner = p.second->getOwnerObject().lock()) {
+            vis_json["owners"][p.first] = std::to_string(owner->getObjectId());
+        }
+    }
+}
 
-// def dump_vis_data_to_file(self):
-//     try:
-//         with open(self.__vis_output_filename, "w") as json_file:
-//             json.dump(self.__vis_data, json_file, indent=2)
-//     except (OSError, IOError) as e:
-//         print("Error in writing to file ", self.__vis_output_filename)
-//         raise e
+void World::writeVisDataToFile(nlohmann::json &vis_json) {
+    std::ofstream file(visOutputFilename_);
+    file << vis_json;
+}
 
-// def visualize(self) -> dict:
-//     """Sets position of the objects with moment (time)
-
-//     Returns:
-//         Dictionary with ObjectID as key, and object's visualization info as value.
-//     """
-//     objects_info = dict()
-//     for oid in self.registry.get_objects():
-//         # TODO:In higher versions, this should be changed (if the visualize method is
-//         changed) objects_info[oid] = self.registry.get_objects()[oid].visualize()
-//     return objects_info
-
-// def dump_all_owners_info(self) -> None:
-//     """ dump visualization info for Owners between objects to the output json file
-
-//     """
-//     owners_info = {"owners": {}}
-//     for oid in self.registry.get_objects():
-//         if self.registry.get_objects()[oid].owner_object is not None:
-//             owners_info["owners"][oid] =
-//             str(self.registry.get_objects()[oid].owner_object.oid)
-//     self.__vis_data.update(owners_info)
 
 } // namespace rosa

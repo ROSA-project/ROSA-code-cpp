@@ -4,6 +4,10 @@
 
 namespace rosa {
 
-class Robot : public Object {};
+class Robot : public Object {
+public:
+    // Inherits the Object's constructor
+    using Object::Object;
+};
 
 } // namespace rosa

@@ -31,7 +31,7 @@ public:
     }
 
     const std::vector<Position>& getIntersectionPoint() {
-        rosa_assert(intersectionPoints_, "no intersection recorded., the method must not have been called");
+        rosa_assert(intersectionPoints_.size() > 0, "no intersection recorded.");
         return intersectionPoints_;
     }
 

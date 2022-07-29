@@ -34,7 +34,7 @@ public:
 private:
     void calculateCircleBounce();
 
-    const Cylinder& getShape() const { *(Cylinder*)shape_.get(); }
+    const Cylinder& getShape() const { return *(Cylinder*)shape_.get(); }
 };
 
 } // namespace rosa

@@ -5,9 +5,10 @@
 #include "object.hpp"
 #include "object_registry.hpp"
 #include "position.hpp"
-
+#include "nlohmann/json.hpp"
 #include <unordered_map>
 #include <vector>
+
 
 namespace rosa {
 
@@ -89,28 +90,14 @@ private:
      */
     float pickDeltaT();
 
-    void updateVisualizationJson();
+    void updateVisualizationJson(nlohmann::json &json);
 
     /**
      * Dump visualization info for shapes to the output json file
      */
-    void dumpAllShapesInfo();
+    void dumpObjectInfo(nlohmann::json &vis_json);
 
-    void dumpVisDataToFile();
-
-    /**
-     * Sets position of the objects with moment (time).
-     *
-     * @return A map with ObjectID as key, and object's visualization info as value.
-     */
-    class VisInfo;
-    std::unordered_map<ObjectId, VisInfo> visualize();
-
-    /**
-     * Dump visualization info for Owners between objects to the output json file.
-     *
-     */
-    void dumpAllOwnersInfo();
+    void writeVisDataToFile(nlohmann::json &vis_json);
 };
 
 } // namespace rosa
