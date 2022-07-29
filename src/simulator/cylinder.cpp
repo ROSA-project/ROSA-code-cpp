@@ -2,6 +2,9 @@
 
 namespace rosa {
 
+Cylinder::Cylinder()
+    : Cylinder(0, 0) {}
+
 Cylinder::Cylinder(float radius, float height)
     : radius_(radius)
     , height_(height) {}

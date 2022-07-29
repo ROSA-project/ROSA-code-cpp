@@ -4,6 +4,7 @@
 #include "box.hpp"
 #include "cube.hpp"
 #include "cylinder.hpp"
+#include "shapeless.hpp"
 #include "utils/util.hpp"
 #include "vacuum_cleaner.hpp"
 #include <fstream>
@@ -91,25 +92,26 @@ std::shared_ptr<Object> Map::instantiateObject(std::shared_ptr<ObjectRegistry> r
 }
 
 Shape* Map::getShape(const nlohmann::json& json) {
-    return nullptr;
-    // if ()
-    //  "shape" not in obj_json:
-    //     return None
-    // else:
-    //     try:
-    //         args = obj_json["shape"]["arguments"]
-    //         cname = obj_json["shape"]["class"]
-    //         if cname == "Cube":
-    //             return Cube(args["lenght"], args["height"], args["width"])
-    //         elif cname == "Cylinder":
-    //             return Cylinder(args["radius"], args["height"])
-    //         else:
-    //             raise ValueError("Unknown shape: ", cname)
-    //     except Exception as e:
-    //         print("Error in parsing object's shape: ", str(e))
-    //         raise e
+    rosa_assert(json.find("type") != json.end(), "Error in parsing json");
+    std::string type = json["type"].get<std::string>();
+    Shape* shape;
+    if (type == "Shapeless") {
+        shape = new Shapeless();
+    } else if (type == "Cube") {
+        shape = new Cube();
+    } else if (type == "Cylinder") {
+        shape = new Cylinder();
+    } else {
+        rosa_assert(1 == 2, "Unknown shape type");
+    }
+    shape->fromJson(json);
+    return shape;
 }
 
-Position Map::getPosition(const nlohmann::json& json) { return Position(); }
+Position Map::getPosition(const nlohmann::json& json) {
+    Position p;
+    p.fromJson(json);
+    return p;
+}
 
 } // namespace rosa

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "nlohmann/json.hpp"
 #include "utils/constants.hpp" // PI_CONST
 #include <cmath>
 #include <tuple>
@@ -35,6 +36,19 @@ struct Position {
 
         // TODO do we need to keep the qualities in position in native data types?
         return std::make_tuple(r, phi, theta);
+    }
+
+    nlohmann::json toJson() const {
+        nlohmann::json j = {{"x", x}, {"y", y}, {"z", z}, {"p", phi}, {"t", theta}};
+        return j;
+    }
+
+    void fromJson(const nlohmann::json& j) {
+        j.at("x").get_to(x);
+        j.at("y").get_to(y);
+        j.at("z").get_to(z);
+        j.at("p").get_to(phi);
+        j.at("t").get_to(theta);
     }
 };
 

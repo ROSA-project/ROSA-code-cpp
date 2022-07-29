@@ -143,9 +143,9 @@ void World::updateVisualizationJson(nlohmann::json& vis_json) {
         std::string key = key_stream.str();
         vis_json[key] = nlohmann::json({});
 
-        // Populate with objects vis info
+        // Populate with the positions of objects
         for (auto& p: registry_->getObjects()) {
-            vis_json[key][p.first] = p.second->visualize();
+            vis_json[key][p.first] = p.second->getPosition().toJson();
         }
         nextFrameTimeMsec_ += visFrameIntervalMsec_;
     }
@@ -156,7 +156,7 @@ void World::dumpObjectInfo(nlohmann::json& vis_json) {
     vis_json["shapes"] = nlohmann::json({});
     vis_json["owners"] = nlohmann::json({});
     for (auto& p: registry_->getObjects()) {
-        vis_json["shapes"][p.first] = p.second->dumpShapeInfo();
+        vis_json["shapes"][p.first] = p.second->getShape().toJson();
         if (auto owner = p.second->getOwnerObject().lock()) {
             vis_json["owners"][p.first] = std::to_string(owner->getObjectId());
         }

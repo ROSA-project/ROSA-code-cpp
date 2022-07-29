@@ -3,6 +3,9 @@
 
 namespace rosa {
 
+Cube::Cube()
+    : Cube(0, 0, 0) {}
+
 Cube::Cube(float length, float height, float width)
     : length_(length)
     , height_(height)
