@@ -10,6 +10,9 @@ __pycache__/
 # CMake common files
 build/
 
+# external dependencies
+external_deps/
+
 # OS specific files
 .DS_Store
 
