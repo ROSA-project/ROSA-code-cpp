@@ -1,5 +1,7 @@
 #!/bin/bash
 
+jobs=$1 # for makefiles, number of jobs (for -j option)
+
 # load versions
 . deps_version.sh
 
@@ -8,11 +10,12 @@ mkdir -p external_deps/include
 
 pushd external_deps > /dev/null
 
+
 # Nlohmann Json library
 echo "installing nlohmann json ..."
 if [ -d	 "include/nlohmann" ]
 then
-	echo "-- already installed."
+	echo "-- already installed"
 else
 	pushd include > /dev/null
 	mkdir nlohmann
@@ -23,22 +26,25 @@ else
 	echo "-- successfully installed nlohmann json!"
 fi
 
-# SimpleJson
-# if [ -d	 "build/simplejson" ]
-# then
-# 	echo ${simplejson} > build/simplejson/version_used.txt
-# else
-# 	# Build library
-# 	git clone https://github.com/nbsdx/SimpleJSON build/simplejson
-# 	cd build/simplejson
-# 	git checkout ${simplejson}
-# 	echo ${simplejson} > version_used.txt
-# 	cd ../..
+# spdlog
+echo "installing spdlog ..."
+if [ -d "include/spdlog" ] 
+then
+	version=$(head -n 1 build/spdlog/version_used.txt)
+	echo "-- already installed (version: ${version})" 
+else
+	# Build library
+	git clone https://github.com/gabime/spdlog.git build/spdlog
+	cd build/spdlog
+	git checkout ${SPD_LOG_COMMIT}
+	mkdir build && cd build && cmake .. && make -j${jobs}
+	cd ..
+	echo ${SPD_LOG_COMMIT} > version_used.txt
+	cd ../..
 
-# 	# Copy the header files into corresponding include folder
-# 	mkdir -p include/simplejson
-# 	cp build/simplejson/json.hpp include/simplejson	
-# fi
+	# Copy the header files into corresponding include folder
+	cp -r build/spdlog/include/spdlog include/	
+fi
 
 # cd to root
 popd > /dev/null
