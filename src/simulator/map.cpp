@@ -12,8 +12,7 @@
 
 namespace rosa {
 
-Map::Map()
-    : nextAvailableId_(0) {}
+Map::Map(){}
 
 std::shared_ptr<ObjectRegistry> Map::parseMap(const std::string& filename) {
     std::ifstream ifs(filename);
@@ -31,32 +30,34 @@ std::shared_ptr<ObjectRegistry> Map::parseMap(const std::string& filename) {
     }
 }
 
-const Object::ObjectMap& Map::getObjects(std::shared_ptr<ObjectRegistry> registry,
+Object::ObjectMap Map::getObjects(std::shared_ptr<ObjectRegistry> registry,
                                          Object::ObjectMap& obj_map,
                                          const nlohmann::json& json,
                                          std::shared_ptr<Object> owner) {
-    // this_level_objects = {};
-    // for (auto oname: json) {
-    //     auto new_obj_id = registry->getNextAvailableId();
-    //     obj = instantiate_object(parsed[oname], new_obj_id, oname, owner)
-    //     this_level_objects[new_id] = obj
-    //     if "subobjects" in parsed[oname]:
-    //         assert parsed[oname]["class"] == "CompoundPhysical", \
-    //             "Only CompoundPhysical objects can have subobjects"
-    //         obj.dependent_objects = getObjects(obj_map, parsed[oname]["subobjects"],
-    //         obj)
-    //     else:
-    //         obj.dependent_objects = {}
+    Object::ObjectMap this_level_objects;
+    for (auto& [oname, obj_json] : json.items()) {
+        auto obj = instantiateObject(registry, obj_json, oname, owner);
+        this_level_objects[obj->getObjectId()] = obj;
+        if (obj_json.find("subobjects") != obj_json.end()) {
+            rosa_assert(obj_json["class"].get<std::string>() == "CompoundPhysical", "Only CompoundPhysical objects can have subobjects");
+            auto dependents = getObjects(registry, obj_map, obj_json["subobjects"], obj);
+            // Add all dependent objects
+            for (auto &p: dependents) {
+                obj->addDependentObject(p.second);
+            }
+        }
+        obj_map[obj->getObjectId()] = obj;
+    }
 
-    //     obj_map[new_id] = obj
-    // return this_level_objects
+    return this_level_objects;
 }
 
 std::shared_ptr<Object> Map::instantiateObject(std::shared_ptr<ObjectRegistry> registry,
                                                const nlohmann::json& json,
-                                               ObjectId new_id,
                                                const std::string& name,
                                                std::shared_ptr<Object> owner) {
+    auto new_id = registry->getNextAvailableId();
+
     auto shape = getShape(json);
     if (shape == nullptr) {
         rosa_assert(json["class"] == "CompoundPhysical",
@@ -80,12 +81,15 @@ std::shared_ptr<Object> Map::instantiateObject(std::shared_ptr<ObjectRegistry> r
         // std::stod(params.at("height"))),
         return std::make_shared<VacuumCleaner>(
             new_id, name, std::move(u_ptr), position, owner, registry_);
+    } else if (cname == "CompoundPhysical") {
+        auto u_ptr = std::unique_ptr<Shapeless>((Shapeless*)shape);
+        return std::make_shared<Object>(
+            new_id, name, std::move(u_ptr), position, owner, registry_);
+    } else if (cname == "Simple") {
+        auto u_ptr = std::unique_ptr<Shape>(shape);
+        return std::make_shared<Object>(
+            new_id, name, std::move(u_ptr), position, owner, registry_);
     }
-    // TODO:
-    // else if (cname == "Simple" || cname == "CompoundPhysical") {
-    //     return std::make_shared<Object>(new_id, name, shape, position, owner,
-    //     registry_);
-    // }
 
     rosa_assert(1 == 2, "Unknown 'class' name for object: {cname}");
     return std::shared_ptr<Object>(nullptr);
