@@ -41,6 +41,7 @@ set(SIM_SRC
     ${ROOT_SIM}/run_simulator.cpp
     ${ROOT_SIM}/vacuum_cleaner.cpp
     ${ROOT_SIM}/world.cpp
+    ${PROJECT_SOURCE_DIR}/src/common/util.cpp
 )
 
 

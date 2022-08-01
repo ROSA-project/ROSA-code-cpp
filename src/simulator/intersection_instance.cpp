@@ -6,6 +6,10 @@ IntersectionInstance::IntersectionInstance(const Object& obj1, const Object& obj
     : obj1_(obj1)
     , obj2_(obj2) {
 
+        // TODO: to silence the "unused variables" warnings.
+        (void)obj1_;
+        (void)obj2_;
+
     intersect();
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <iostream>
 
 namespace rosa {
@@ -18,5 +19,8 @@ namespace rosa {
         }                                                                           \
     } while (false)
 #endif
+
+
+uint64_t time_since_epoch_in_millisec();
 
 } // namespace rosa

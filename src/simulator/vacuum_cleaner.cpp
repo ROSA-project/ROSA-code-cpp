@@ -1,5 +1,5 @@
 #include "vacuum_cleaner.hpp"
-#include "utils/util.hpp"
+#include "common/util.hpp"
 #include <algorithm>
 
 namespace rosa {

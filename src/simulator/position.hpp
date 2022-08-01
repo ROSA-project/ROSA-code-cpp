@@ -1,7 +1,7 @@
 #pragma once
 
 #include "nlohmann/json.hpp"
-#include "utils/constants.hpp" // PI_CONST
+#include "common/constants.hpp" // PI_CONST
 #include <cmath>
 #include <tuple>
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "shape.hpp"
-#include "utils/util.hpp"
+#include "common/util.hpp"
 #include <memory>
 
 namespace rosa {

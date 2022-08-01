@@ -1,9 +1,11 @@
 #include "world.hpp"
 #include "map.hpp"
-#include "utils/constants.hpp"
+#include "common/constants.hpp"
+#include "common/util.hpp"
 #include <algorithm>
 #include <ctime>
 #include <fstream>
+
 
 namespace rosa {
 
@@ -15,6 +17,8 @@ World::World(const std::string& map_filename, const std::string& vis_filename)
     , visFrameIntervalMsec_(0.025)
     , nextFrameTimeMsec_(0) {
     // TODO hardcoded parameters in this ctor, to be taken care of properly
+
+    creationTs_ = time_since_epoch_in_millisec();
 
     // Parse input map
     Map map;

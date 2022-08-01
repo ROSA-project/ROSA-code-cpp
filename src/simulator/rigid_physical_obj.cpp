@@ -1,5 +1,5 @@
 #include "rigid_physical_obj.hpp"
-#include "utils/constants.hpp" // PI_CONST
+#include "common/constants.hpp" // PI_CONST
 #include <cmath>
 
 namespace rosa {

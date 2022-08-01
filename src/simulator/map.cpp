@@ -5,7 +5,7 @@
 #include "cube.hpp"
 #include "cylinder.hpp"
 #include "shapeless.hpp"
-#include "utils/util.hpp"
+#include "common/util.hpp"
 #include "vacuum_cleaner.hpp"
 #include <fstream>
 #include <stdexcept>

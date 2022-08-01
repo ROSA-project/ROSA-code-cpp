@@ -119,8 +119,6 @@ public:
      */
     bool isEvolvable() const;
 
-    void visualize() const;
-
 protected:
     ObjectId oid_;
     const std::string name_;
