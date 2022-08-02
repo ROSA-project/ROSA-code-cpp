@@ -5,10 +5,9 @@
 #include "cube.hpp"
 #include "cylinder.hpp"
 #include "shapeless.hpp"
+#include "common/logger.hpp"
 #include "common/util.hpp"
 #include "vacuum_cleaner.hpp"
-
-#include "spdlog/spdlog.h"
 
 #include <fstream>
 #include <stdexcept>
@@ -37,37 +36,37 @@ Object::ObjectMap Map::getObjects(std::shared_ptr<ObjectRegistry> registry,
                                          Object::ObjectMap& obj_map,
                                          const nlohmann::json& json,
                                          std::shared_ptr<Object> owner) {
-    spdlog::info("map 0");
+    LOG_INFO("map 0");
     Object::ObjectMap this_level_objects;
     for (auto& [oname, obj_json] : json.items()) {
-        spdlog::info("map 1 oname {}, json {}", oname, obj_json.dump());
+        LOG_INFO("map 1 oname {}, json {}", oname, obj_json.dump());
 
         auto obj = instantiateObject(registry, obj_json, oname, owner);
-        spdlog::info("map 3");
+        LOG_INFO("map 3");
 
         this_level_objects[obj->getObjectId()] = obj;
-        spdlog::info("map 4");
+        LOG_INFO("map 4");
 
         if (obj_json.find("subobjects") != obj_json.end()) {
-            spdlog::info("map 5");
+            LOG_INFO("map 5");
 
             rosa_assert(obj_json["class"].get<std::string>() == "CompoundPhysical", "Only CompoundPhysical objects can have subobjects");
             auto dependents = getObjects(registry, obj_map, obj_json["subobjects"], obj);
-            spdlog::info("map 6");
+            LOG_INFO("map 6");
 
             // Add all dependent objects
             for (auto &p: dependents) {
-                spdlog::info("map 7");
+                LOG_INFO("map 7");
 
                 obj->addDependentObject(p.second);
             }
-            spdlog::info("map 8");
+            LOG_INFO("map 8");
 
         }
-        spdlog::info("map 9");
+        LOG_INFO("map 9");
 
         obj_map[obj->getObjectId()] = obj;
-        spdlog::info("map 10");
+        LOG_INFO("map 10");
 
     }
     
@@ -79,11 +78,11 @@ std::shared_ptr<Object> Map::instantiateObject(std::shared_ptr<ObjectRegistry> r
                                                const nlohmann::json& json,
                                                const std::string& name,
                                                std::shared_ptr<Object> owner) {
-    spdlog::info("instantiate 1");
+    LOG_INFO("instantiate 1");
     auto new_id = registry->getNextAvailableId();
-spdlog::info("instantiate 2");
+    LOG_INFO("instantiate 2");
     auto shape = getShape(json);
-    spdlog::info("instantiate 3");
+    LOG_INFO("instantiate 3");
     if (shape == nullptr) {
         rosa_assert(json["class"] == "CompoundPhysical",
                     "Only CompoundPhysical objects can be shape-less");
@@ -121,20 +120,20 @@ spdlog::info("instantiate 2");
 }
 
 Shape* Map::getShape(const nlohmann::json& json) {
-    spdlog::info("shape 1");
+    LOG_INFO("shape 1");
     if (json.find("shape") == json.end()) {
-        spdlog::error("Error in parsing json: {}", json.dump());
+        LOG_ERROR("Error in parsing json: {}", json.dump());
         return nullptr;
     } 
-    spdlog::info("shape 2");
+    LOG_INFO("shape 2");
     auto& shape_json = json.at("shape");
     if (shape_json.find("class") == shape_json.end()) {
-        spdlog::error("Error in parsing json: {}", shape_json.dump());
+        LOG_ERROR("Error in parsing json: {}", shape_json.dump());
         return nullptr;
     }
 
     Shape* shape;
-        spdlog::info("shape 3");
+    LOG_INFO("shape 3");
     std::string type = shape_json.at("class").get<std::string>();
     if (type == "Shapeless") {
         shape = new Shapeless();
@@ -145,10 +144,10 @@ Shape* Map::getShape(const nlohmann::json& json) {
     } else {
         rosa_assert(1 == 2, "Unknown shape type");
     }
-        spdlog::info("shape 4");
+    LOG_INFO("shape 4");
 
     shape->fromJson(shape_json);
-    spdlog::info("shape 5");
+    LOG_INFO("shape 5");
 
     return shape;
 }
