@@ -2,9 +2,9 @@
     "wall0":{
         "class": "Box",
         "shape": {
-            "class": "Cube",
-            "arguments": {
-                "lenght": 300,
+            "type": "Cube",
+            "params": {
+                "length": 300,
                 "height": 350,
                 "width": 5
             }
@@ -14,9 +14,9 @@
     "wall1":{
         "class": "Box",
         "shape": {
-            "class": "Cube",
-            "arguments": {
-                "lenght": 5,
+            "type": "Cube",
+            "params": {
+                "length": 5,
                 "height": 350,
                 "width": 400
             }
@@ -26,9 +26,9 @@
     "wall2":{
         "class": "Box",
         "shape": {
-            "class": "Cube",
-            "arguments": {
-                "lenght": 300,
+            "type": "Cube",
+            "params": {
+                "length": 300,
                 "height": 350,
                 "width": 5
             }
@@ -38,9 +38,9 @@
     "wall3":{
         "class": "Box",
         "shape": {
-            "class": "Cube",
-            "arguments": {
-                "lenght": 5,
+            "type": "Cube",
+            "params": {
+                "length": 5,
                 "height": 350,
                 "width": 400
             }
@@ -50,8 +50,8 @@
     "leg0":{
         "class": "Simple",
         "shape": {
-            "class": "Cylinder",
-            "arguments": {
+            "type": "Cylinder",
+            "params": {
                 "radius": 2,
                 "height": 80
             }
@@ -61,8 +61,8 @@
     "leg1":{
         "class": "Simple",
         "shape": {
-            "class": "Cylinder",
-            "arguments": {
+            "type": "Cylinder",
+            "params": {
                 "radius": 2,
                 "height": 80
             }
@@ -72,8 +72,8 @@
     "leg2":{
         "class": "Simple",
         "shape": {
-            "class": "Cylinder",
-            "arguments": {
+            "type": "Cylinder",
+            "params": {
                 "radius": 2,
                 "height": 80
             }
@@ -83,8 +83,8 @@
     "leg3":{
         "class": "Simple",
         "shape": {
-            "class": "Cylinder",
-            "arguments": {
+            "type": "Cylinder",
+            "params": {
                 "radius": 2,
                 "height": 80
             }
@@ -94,9 +94,9 @@
     "surface":{
         "class": "Box",
         "shape": {
-            "class": "Cube",
-            "arguments": {
-                "lenght": 70,
+            "type": "Cube",
+            "params": {
+                "length": 70,
                 "height": 5,
                 "width": 50
             }

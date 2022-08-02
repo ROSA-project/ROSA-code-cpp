@@ -23,7 +23,7 @@ public:
     bool isShapeless() const override { return false; }
 
     nlohmann::json toJson() const override {
-        nlohmann::json dim = {{"r", radius_}, {"h", height_}};
+        nlohmann::json dim = {{"radius", radius_}, {"height", height_}};
         nlohmann::json j = {{"type", "Cylinder"}, {"params", dim}};
         return j;
     }
@@ -32,8 +32,8 @@ public:
         rosa_assert(j["type"].get<std::string>() == "Cylinder",
                     "Problem in json conversion of Cylinder");
         auto dim = j["params"];
-        dim.at("r").get_to(radius_);
-        dim.at("h").get_to(height_);
+        dim.at("radius").get_to(radius_);
+        dim.at("height").get_to(height_);
     }
 
 private:

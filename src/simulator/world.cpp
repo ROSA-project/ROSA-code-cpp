@@ -2,9 +2,11 @@
 #include "map.hpp"
 #include "common/constants.hpp"
 #include "common/util.hpp"
+#include "spdlog/spdlog.h"
 #include <algorithm>
 #include <ctime>
 #include <fstream>
+
 
 
 namespace rosa {
@@ -19,10 +21,12 @@ World::World(const std::string& map_filename, const std::string& vis_filename)
     // TODO hardcoded parameters in this ctor, to be taken care of properly
 
     creationTs_ = time_since_epoch_in_millisec();
+	spdlog::info("1");
 
     // Parse input map
     Map map;
     registry_ = map.parseMap(map_filename);
+	spdlog::info("Successfully loaded the map from {}", map_filename);
 }
 
 void World::evolve(float delta_t) {
