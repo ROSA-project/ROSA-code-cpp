@@ -1,7 +1,7 @@
 #pragma once
 
-#include "position.hpp"
 #include "nlohmann/json.hpp"
+#include "position.hpp"
 #include <memory>
 
 namespace rosa {

@@ -1,22 +1,23 @@
 #include "world.hpp"
-#include "map.hpp"
 #include "common/constants.hpp"
 #include "common/logger.hpp"
 #include "common/util.hpp"
+#include "config.hpp"
+#include "map.hpp"
 #include <algorithm>
 #include <ctime>
 #include <fstream>
 
-
-
 namespace rosa {
 
-World::World(const std::string& map_filename, const std::string& vis_filename)
+World::World(const std::string& map_filename,
+             const std::string& vis_filename,
+             const WorldConfig w_config)
     : numEvolutions_(0)
-    , currentTime_(std::time(0))
+    , timeSinceStartMSec_(0)
     , visOutputFilename_(vis_filename)
-    , durationSec_(10)
-    , visFrameIntervalMsec_(0.025)
+    , durationMSec_(w_config.simDurationMsec) // 10 seconds
+    , visFrameIntervalMsec_(w_config.visFrameIntervalMsec)
     , nextFrameTimeMsec_(0) {
     // TODO hardcoded parameters in this ctor, to be taken care of properly
 
@@ -25,7 +26,7 @@ World::World(const std::string& map_filename, const std::string& vis_filename)
     // Parse input map
     Map map;
     registry_ = map.parseMap(map_filename);
-	LOG_INFO("Successfully loaded the map from {}", map_filename);
+    LOG_INFO("Successfully loaded the map from {}", map_filename);
 }
 
 void World::evolve(float delta_t) {
@@ -97,11 +98,12 @@ void World::registerIntersections(const World::InInType& intersection_result) {
 
 float World::pickDeltaT() {
     // TODO: For now, we will only  run the world for one round
-    float new_dt = durationSec_ + 1;
-    for (auto& p: registry_->getObjects()) {
-        new_dt = std::min(new_dt, p.second->getRequiredDeltaT());
-    }
-    return new_dt;
+    // float new_dt = durationMSec_ + 1;
+    // for (auto& p: registry_->getObjects()) {
+    //     new_dt = std::min(new_dt, p.second->getRequiredDeltaT());
+    // }
+    // return new_dt;
+    return 10;
 }
 
 void World::run() {
@@ -109,21 +111,28 @@ void World::run() {
     nlohmann::json vis_json;
 
     float last_progress = 0;
-    while (currentTime_ < durationSec_) {
+    bool success = true;
+    while (timeSinceStartMSec_ < durationMSec_) {
         auto delta_t = pickDeltaT();
-        auto progress = currentTime_ / durationSec_ * 100;
-        if (progress > last_progress) {
+        if (delta_t == 0) {
+            LOG_ERROR("delta_t is set to 0.");
+            success = false;
+            break;
+        }
+        auto progress = (timeSinceStartMSec_ * 100ULL) / durationMSec_;
+        if (progress > last_progress + 5) {
             last_progress = progress;
-            // TODO: print(str(current_percentage) + "% processed")
+            LOG_INFO("Progress: {}%", progress);
         }
 
         // TODO: logger.Logger.add_line("at t = " + str(self.__current_time_ms) + ", "
         // "picked delta_t = " + str(delta_t))
         evolve(delta_t);
+
         auto [intersection_result, non_inf_intersect] = intersect();
         if (non_inf_intersect) {
-            // TODO: print("non-infinitesimal_intersection happened! exiting simulation
-            // loop")
+            LOG_ERROR("Non-inf. intersection happened! Exiting simulation loop");
+            success = false;
             break;
         }
 
@@ -134,17 +143,24 @@ void World::run() {
 
         updateVisualizationJson(vis_json);
 
-        currentTime_ += delta_t;
+        timeSinceStartMSec_ += delta_t;
         numEvolutions_ += 1;
     }
 
     dumpObjectInfo(vis_json);
+
     writeVisDataToFile(vis_json);
+
+    if (success) {
+        LOG_INFO("Successfully finished the simulation!");
+    } else {
+        LOG_ERROR("Simulation finished with error!");
+    }
 }
 
 void World::updateVisualizationJson(nlohmann::json& vis_json) {
     std::stringstream key_stream;
-    while (currentTime_ >= nextFrameTimeMsec_) {
+    while (timeSinceStartMSec_ >= nextFrameTimeMsec_) {
         key_stream << std::fixed << std::setprecision(VIZ_DECIMAL_LENGTH)
                    << nextFrameTimeMsec_;
         std::string key = key_stream.str();
@@ -152,7 +168,8 @@ void World::updateVisualizationJson(nlohmann::json& vis_json) {
 
         // Populate with the positions of objects
         for (auto& p: registry_->getObjects()) {
-            vis_json[key][p.first] = p.second->getPosition().toJson();
+            auto oid_str = std::to_string(p.first);
+            vis_json[key][oid_str] = p.second->getPosition().toJson();
         }
         nextFrameTimeMsec_ += visFrameIntervalMsec_;
     }
@@ -162,17 +179,26 @@ void World::dumpObjectInfo(nlohmann::json& vis_json) {
     // Dump shapes and owners info.
     vis_json["shapes"] = nlohmann::json({});
     vis_json["owners"] = nlohmann::json({});
+
     for (auto& p: registry_->getObjects()) {
-        vis_json["shapes"][p.first] = p.second->getShape().toJson();
+        auto oid_str = std::to_string(p.first);
+        vis_json["shapes"][oid_str] = p.second->getShape().toJson();
         if (auto owner = p.second->getOwnerObject().lock()) {
-            vis_json["owners"][p.first] = std::to_string(owner->getObjectId());
+            vis_json["owners"][oid_str] = std::to_string(owner->getObjectId());
         }
     }
 }
 
 void World::writeVisDataToFile(nlohmann::json& vis_json) {
+    std::ofstream o(visOutputFilename_);
+    o << std::setw(4) << vis_json << std::endl;
+
     std::ofstream file(visOutputFilename_);
-    file << vis_json;
+    if (config::prettified_json_output) {
+        file << std::setw(4) << vis_json << std::endl;
+    } else {
+        file << vis_json;
+    }
 }
 
 } // namespace rosa

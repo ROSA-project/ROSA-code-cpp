@@ -1,9 +1,9 @@
 #pragma once
 
+#include "nlohmann/json.hpp"
 #include "object.hpp"
 #include "object_registry.hpp"
 #include "position.hpp"
-#include "nlohmann/json.hpp"
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -31,9 +31,9 @@ private:
      * stores a dictionary of objects at this current level (and not deeper)
      */
     Object::ObjectMap getObjects(std::shared_ptr<ObjectRegistry> registry,
-                                        Object::ObjectMap& obj_map,
-                                        const nlohmann::json& json,
-                                        std::shared_ptr<Object> owner);
+                                 Object::ObjectMap& obj_map,
+                                 const nlohmann::json& json,
+                                 std::shared_ptr<Object> owner);
 
     std::shared_ptr<Object> instantiateObject(std::shared_ptr<ObjectRegistry> registry,
                                               const nlohmann::json& json,

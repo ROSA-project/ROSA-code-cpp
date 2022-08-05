@@ -42,14 +42,9 @@ set(SIM_SRC
     ${ROOT_SIM}/vacuum_cleaner.cpp
     ${ROOT_SIM}/world.cpp
     ${PROJECT_SOURCE_DIR}/src/common/util.cpp
+    ${PROJECT_SOURCE_DIR}/src/config.cpp
 )
-
-
-# find_package(nlohmann_json 3.10.5 REQUIRED)
-
 
 add_executable(RosaSimulator ${SIM_SRC})
 
 target_include_directories(RosaSimulator PUBLIC "src/simulator" )
-
-# target_link_libraries(RosaSimulator PRIVATE nlohmann_json::nlohmann_json)

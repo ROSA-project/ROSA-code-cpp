@@ -1,8 +1,8 @@
 #pragma once
 
-#include "nlohmann/json.hpp"
 #include "common/constants.hpp" // PI_CONST
 #include "common/util.hpp"
+#include "nlohmann/json.hpp"
 #include <cmath>
 #include <tuple>
 
@@ -45,8 +45,9 @@ struct Position {
     }
 
     void fromJson(const nlohmann::json& j) {
-        if (j.find("x") != j.end() || j.find("y") != j.end() || j.find("z") != j.end() || j.find("p") != j.end() || j.find("t") != j.end()) {
-            rosa_assert(1==2, "Invalid arguments for shape json");
+        if (j.find("x") == j.end() || j.find("y") == j.end() || j.find("z") == j.end()
+            || j.find("p") == j.end() || j.find("t") == j.end()) {
+            rosa_assert(1 == 2, "Invalid arguments for position json");
         }
         j.at("x").get_to(x);
         j.at("y").get_to(y);

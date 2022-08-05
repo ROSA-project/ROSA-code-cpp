@@ -1,7 +1,7 @@
 #pragma once
 
-#include "object.hpp"
 #include "common/util.hpp"
+#include "object.hpp"
 
 namespace rosa {
 

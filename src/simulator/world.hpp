@@ -11,6 +11,11 @@
 
 namespace rosa {
 
+struct WorldConfig {
+    uint64_t simDurationMsec;
+    uint64_t visFrameIntervalMsec;
+};
+
 /**
  * Maintains the state of the world including all its objects. There will be only one
  * instance of this class, responsible for evolving the objects and runs the main cycle.
@@ -22,7 +27,9 @@ class World {
         std::unordered_map<ObjectId, std::vector<std::shared_ptr<IntersectionInstance>>>;
 
 public:
-    World(const std::string& map_filename, const std::string& vis_filename);
+    World(const std::string& map_filename,
+          const std::string& vis_filename,
+          const WorldConfig w_config);
 
     /**
      * World's main cycle.
@@ -43,12 +50,13 @@ private:
     uint64_t numEvolutions_;
 
     // Simulator's current time in millisecond.
-    uint64_t currentTime_;
+    uint64_t timeSinceStartMSec_;
 
     const std::string visOutputFilename_;
 
-    // How many seconds the world instance will exist for.
-    const uint64_t durationSec_;
+    // How many milli seconds the world instance will exist for.
+    // 0 is unlimited.
+    const uint64_t durationMSec_;
 
     // The time in msec between each two visualization frames.
     float visFrameIntervalMsec_;

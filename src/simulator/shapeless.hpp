@@ -1,9 +1,9 @@
 #pragma once
 
+#include "common/util.hpp"
 #include "nlohmann/json.hpp"
 #include "position.hpp"
 #include "shape.hpp"
-#include "common/util.hpp"
 #include <memory>
 
 namespace rosa {

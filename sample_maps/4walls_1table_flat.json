@@ -9,7 +9,7 @@
                 "width": 5
             }
         },
-        "position": [0,0,0,0,0]
+        "position": {"x":0,"y":0,"z":0,"p":0,"t":0}
     },
     "wall1":{
         "class": "Box",
@@ -21,7 +21,7 @@
                 "width": 400
             }
         },
-        "position": [0,0,0,90,0]
+        "position": {"x":0,"y":0,"z":0,"p":90,"t":0}
     },
     "wall2":{
         "class": "Box",
@@ -33,7 +33,7 @@
                 "width": 5
             }
         },
-        "position": [0,395,0,0,0]
+        "position": {"x":0,"y":395,"z":0,"p":0,"t":0}
     },
     "wall3":{
         "class": "Box",
@@ -45,7 +45,7 @@
                 "width": 400
             }
         },
-        "position": [295,0,0,90,0]
+        "position": {"x":295,"y":0,"z":0,"p":90,"t":0}
     },
     "leg0":{
         "class": "Simple",
@@ -56,7 +56,7 @@
                 "height": 80
             }
         },
-        "position": [200,200,0,0,0]
+        "position": {"x":200,"y":200,"z":0,"p":0,"t":0}
     },
     "leg1":{
         "class": "Simple",
@@ -67,7 +67,7 @@
                 "height": 80
             }
         },
-        "position": [200,246,0,0,0]
+        "position": {"x":200,"y":246,"z":0,"p":0,"t":0}
     },
     "leg2":{
         "class": "Simple",
@@ -78,7 +78,7 @@
                 "height": 80
             }
         },
-        "position": [266,246,0,0,0]
+        "position": {"x":266,"y":246,"z":0,"p":0,"t":0}
     },
     "leg3":{
         "class": "Simple",
@@ -89,7 +89,7 @@
                 "height": 80
             }
         },
-        "position": [266,200,0,0,0]
+        "position": {"x":266,"y":200,"z":0,"p":0,"t":0}
     },
     "surface":{
         "class": "Box",
@@ -101,6 +101,6 @@
                 "width": 50
             }
         },
-        "position": [200,200,80,0,0]
+        "position": {"x":200,"y":200,"z":80,"p":0,"t":0}
     }
 }

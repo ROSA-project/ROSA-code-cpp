@@ -1,7 +1,7 @@
 #pragma once
 
-#include "shape.hpp"
 #include "common/util.hpp"
+#include "shape.hpp"
 #include <memory>
 
 namespace rosa {
@@ -25,7 +25,8 @@ public:
     bool isShapeless() const override { return false; }
 
     nlohmann::json toJson() const override {
-        nlohmann::json dim = {{"length", length_}, {"height", height_}, {"width", width_}};
+        nlohmann::json dim = {
+            {"length", length_}, {"height", height_}, {"width", width_}};
         nlohmann::json j = {{"type", "Cube"}, {"params", dim}};
         return j;
     }
