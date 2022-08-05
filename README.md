@@ -10,7 +10,7 @@ Robot Simulation Architecture, in C++.
    * CMake version 3.10
 
 ## How to Build
-### 1. Fetch external dependencies by:
+### 1. Fetch external dependencies:
 ```./prepare.sh -j8```
 
 ### 2. Build the project:
