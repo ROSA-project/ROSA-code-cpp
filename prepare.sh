@@ -1,6 +1,6 @@
 #!/bin/bash
 
-jobs=$1 # for makefiles, number of jobs (for -j option)
+args=$1 # fow now, number of jobs (i.e. -j option in Makefile)
 
 # load versions
 . deps_version.sh
@@ -37,7 +37,7 @@ else
 	git clone https://github.com/gabime/spdlog.git build/spdlog
 	cd build/spdlog
 	git checkout ${SPD_LOG_COMMIT}
-	mkdir build && cd build && cmake .. && make -j${jobs}
+	mkdir build && cd build && cmake .. && make ${args}
 	cd ..
 	echo ${SPD_LOG_COMMIT} > version_used.txt
 	cd ../..
