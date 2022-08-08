@@ -10,6 +10,10 @@ Robot Simulation Architecture, in C++.
    * CMake version 3.10
 
 ## How to Build
+### 1. Fetch external dependencies:
+```./prepare.sh -j8```
+
+### 2. Build the project:
 ```
 mkdir build
 cd build
@@ -18,4 +22,7 @@ make -j8
 ```
 
 ## How to Run
-TODO
+In `build` folder, run the executable as below:
+```
+./RosaSimulator -m ../sample_maps/multiple_walls_1ball.json
+```
