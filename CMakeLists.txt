@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD 17) # gnu++-17
 # set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall") # Warn all
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g") # symbol info
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # produces compile_commands.json
 
 
 # ==== Sanitizer ====
@@ -15,6 +16,28 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g") # symbol info
 if (ADDR_SANITIZER GREATER 0)
     message(STATUS "--- ADDRESS SANITIZER: Enabled ---")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+endif()
+
+
+
+# ==== Clang tidy ====
+
+find_program(CLANG_TIDY_COMMAND NAMES clang-tidy)
+
+if(NOT CLANG_TIDY_COMMAND)
+    message(WARNING "Could not find clang-tidy!")
+    set(CMAKE_CXX_CLANG_TIDY "" CACHE STRING "" FORCE)
+else()
+    message(STATUS "Found clang-tidy")
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    set(CMAKE_CXX_CLANG_TIDY
+        clang-tidy;
+        -header-filter=src/.; # this excludes checking external libs
+        # -config-file=${CMAKE_SOURCE_DIR}/.clang-tidy;
+        -format-style=file;
+        -p ${CMAKE_BINARY_DIR};
+        # -warnings-as-errors=*;  # not too harsh for now : )
+    )
 endif()
 
 
