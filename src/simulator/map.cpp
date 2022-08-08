@@ -68,13 +68,7 @@ std::shared_ptr<Object> Map::instantiateObject(std::shared_ptr<ObjectRegistry> r
     auto new_id = registry->getNextAvailableId();
 
     Shape* shape = nullptr;
-    if (json_has(json, "shape")) {
-        shape = getShape(json["shape"]);
-    }
-    if (shape == nullptr) {
-        rosa_assert(json["class"] == "CompoundPhysical",
-                    "Only CompoundPhysical objects can be shape-less" << json.dump());
-    }
+    shape = getShape(json);
 
     if (!json_has(json, "position")) {
         LOG_ERROR("Error in parsing json: {}", json.dump());
@@ -114,13 +108,21 @@ std::shared_ptr<Object> Map::instantiateObject(std::shared_ptr<ObjectRegistry> r
 }
 
 Shape* Map::getShape(const nlohmann::json& json) {
-    if (!json_has(json, "type")) {
-        LOG_ERROR("Error in parsing json, 'shape' has no 'type': {}", json.dump());
+    if (!json_has(json, "shape")) {
+        // Must be compound object
+        MUST_TRUE(json_has(json, "class") && json["class"] == "CompoundPhysical");
+        return new Shapeless();
+    }
+
+    auto& json_shape = json["shape"];
+
+    if (!json_has(json_shape, "type")) {
+        LOG_ERROR("Error in parsing json, 'shape' has no 'type': {}", json_shape.dump());
         return nullptr;
     }
 
     Shape* shape;
-    std::string type = json.at("type").get<std::string>();
+    std::string type = json_shape.at("type").get<std::string>();
     if (type == "Shapeless") {
         shape = new Shapeless();
     } else if (type == "Cube") {
@@ -131,7 +133,7 @@ Shape* Map::getShape(const nlohmann::json& json) {
         rosa_assert(1 == 2, "Unknown shape type");
     }
 
-    shape->fromJson(json);
+    shape->fromJson(json_shape);
 
     return shape;
 }

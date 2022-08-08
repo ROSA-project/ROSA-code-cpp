@@ -1,4 +1,5 @@
 #include "object.hpp"
+#include "common/logger.hpp"
 #include "intersection_instance.hpp"
 #include "object_registry.hpp"
 

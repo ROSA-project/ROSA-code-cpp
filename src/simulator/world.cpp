@@ -146,15 +146,16 @@ void World::run() {
         timeSinceStartMSec_ += delta_t;
         numEvolutions_ += 1;
     }
+    LOG_DEBUG("Finished the simulation cycles.");
 
     dumpObjectInfo(vis_json);
 
     writeVisDataToFile(vis_json);
 
     if (success) {
-        LOG_INFO("Successfully finished the simulation!");
+        LOG_INFO("Simulation ended successfully!");
     } else {
-        LOG_ERROR("Simulation finished with error!");
+        LOG_ERROR("Exiting the simulation with error!");
     }
 }
 
@@ -187,6 +188,7 @@ void World::dumpObjectInfo(nlohmann::json& vis_json) {
             vis_json["owners"][oid_str] = std::to_string(owner->getObjectId());
         }
     }
+    LOG_DEBUG("Dumped objects' info to vis json");
 }
 
 void World::writeVisDataToFile(nlohmann::json& vis_json) {
@@ -199,6 +201,7 @@ void World::writeVisDataToFile(nlohmann::json& vis_json) {
     } else {
         file << vis_json;
     }
+    LOG_DEBUG("Wrote vis json to file: {}", visOutputFilename_);
 }
 
 } // namespace rosa
