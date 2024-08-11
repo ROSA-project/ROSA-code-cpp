@@ -11,7 +11,9 @@ __pycache__/
 build/
 
 # external dependencies
-external_deps/
+# external_deps/ 
+#     --> commented out temporarily as external dependencies are added to 
+#     the repo until fetching/downloading as part of build is sorted out.
 
 # OS specific files
 .DS_Store
