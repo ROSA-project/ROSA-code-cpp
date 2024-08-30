@@ -13,6 +13,8 @@ Robot Simulation Architecture, in C++.
 ### 1. Fetch external dependencies:
 ```./prepare.sh -j8```
 
+Temporarily bypassed by adding the dependencies to the repository as downloading from the Internet has to be made portable. To be fixed.
+
 ### 2. Build the project:
 ```
 mkdir build
