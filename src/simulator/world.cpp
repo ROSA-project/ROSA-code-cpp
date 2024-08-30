@@ -12,11 +12,11 @@
 namespace rosa {
 
 World::World(const std::string& map_filename,
-             const std::string& vis_filename,
+             const std::string& vis_filename_prefix,
              const WorldConfig w_config)
     : numEvolutions_(0)
     , timeSinceStartMSec_(0)
-    , visOutputFilename_(vis_filename)
+    , visOutputFilenamePrefix_(vis_filename_prefix)
     , durationMSec_(w_config.simDurationMsec) // 10 seconds
     , visFrameIntervalMsec_(w_config.visFrameIntervalMsec)
     , nextFrameTimeMsec_(0) {
@@ -109,7 +109,10 @@ float World::pickDeltaT() {
 
 void World::run() {
     // The json object containing data to be used by the visualizer
-    nlohmann::json vis_json;
+    nlohmann::json vis_json_objects;
+    nlohmann::json vis_json_sim_nonuniform;
+    // TODO not yet implemented, but anyway the nonuniform is forced to be uniform
+    //nlohmann::json vis_json_sim_uniform;
 
     float last_progress = 0;
     bool success = true;
@@ -142,16 +145,17 @@ void World::run() {
         // evolution)
         registerIntersections(intersection_result);
 
-        updateVisualizationJson(vis_json);
+        updateVisualizationJson(vis_json_sim_nonuniform);
 
         timeSinceStartMSec_ += delta_t;
         numEvolutions_ += 1;
     }
     LOG_DEBUG("Finished the simulation cycles.");
 
-    dumpObjectInfo(vis_json);
+    dumpObjectInfo(vis_json_objects);
 
-    writeVisDataToFile(vis_json);
+    writeVisDataToFile(vis_json_objects, visOutputFilenamePrefix_ + "_objects.json");
+    writeVisDataToFile(vis_json_sim_nonuniform, visOutputFilenamePrefix_ + "_sim_nonuniform.json");
 
     if (success) {
         LOG_INFO("Simulation ended successfully!");
@@ -192,17 +196,17 @@ void World::dumpObjectInfo(nlohmann::json& vis_json) {
     LOG_DEBUG("Dumped objects' info to vis json");
 }
 
-void World::writeVisDataToFile(nlohmann::json& vis_json) {
-    std::ofstream o(visOutputFilename_);
+void World::writeVisDataToFile(nlohmann::json& vis_json, const std::string& vis_filename) {
+    std::ofstream o(vis_filename);
     o << std::setw(4) << vis_json << std::endl;
 
-    std::ofstream file(visOutputFilename_);
+    std::ofstream file(vis_filename);
     if (config::prettified_json_output) {
         file << std::setw(4) << vis_json << std::endl;
     } else {
         file << vis_json;
     }
-    LOG_DEBUG("Wrote vis json to file: {}", visOutputFilename_);
+    LOG_DEBUG("Wrote vis json to file: {}", vis_filename);
 }
 
 } // namespace rosa

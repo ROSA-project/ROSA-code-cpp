@@ -28,7 +28,7 @@ class World {
 
 public:
     World(const std::string& map_filename,
-          const std::string& vis_filename,
+          const std::string& vis_filename_prefix,
           const WorldConfig w_config);
 
     /**
@@ -52,7 +52,7 @@ private:
     // Simulator's current time in millisecond.
     uint64_t timeSinceStartMSec_;
 
-    const std::string visOutputFilename_;
+    const std::string visOutputFilenamePrefix_;
 
     // How many milli seconds the world instance will exist for.
     // 0 is unlimited.
@@ -104,7 +104,7 @@ private:
      */
     void dumpObjectInfo(nlohmann::json& vis_json);
 
-    void writeVisDataToFile(nlohmann::json& vis_json);
+    void writeVisDataToFile(nlohmann::json& vis_json, const std::string& vis_filename);
 };
 
 } // namespace rosa
