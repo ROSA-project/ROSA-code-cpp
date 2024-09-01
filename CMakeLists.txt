@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
+set(CMAKE_C_COMPILER "C:/msys64/ucrt64/bin/gcc.exe")
+set(CMAKE_CXX_COMPILER "C:/msys64/ucrt64/bin/g++.exe")
+
 
 project (RosaSimulator VERSION 0.1)
 
 # ==== Compiler flags ====
-
 set(CMAKE_CXX_STANDARD 17) # gnu++-17
 # set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall") # Warn all
