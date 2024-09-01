@@ -49,13 +49,18 @@ struct Position {
         return o;
     }
 
-    void fromJson(const nlohmann::json& j) {
-        if (j.find("x") == j.end() || j.find("y") == j.end() || j.find("z") == j.end()) {
+    void fromJson(const nlohmann::json& o) {
+        if (o.find("x") == o.end() || o.find("y") == o.end() || o.find("z") == o.end()) {
             rosa_assert(1 == 2, "Invalid arguments for position json");
         }
-        j.at("x").get_to(x);
-        j.at("y").get_to(y);
-        j.at("z").get_to(z);
+        o.at("x").get_to(x);
+        o.at("y").get_to(y);
+        o.at("z").get_to(z);
+        o.at("theta").get_to(theta);
+        o.at("i").get_to(i);
+        o.at("j").get_to(j);
+        o.at("k").get_to(k);
+        
     }
 };
 
