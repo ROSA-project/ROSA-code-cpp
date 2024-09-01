@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cylinder.hpp"
+#include "sphere.hpp"
 #include "position.hpp"
 #include "rigid_physical_obj.hpp"
 #include "velocity.hpp"
@@ -15,7 +16,7 @@ class RigidPointBall : public RigidPhysicalObject {
 public:
     RigidPointBall(const ObjectId& oid,
                    const std::string& name,
-                   std::unique_ptr<Cylinder>&& shape,
+                   std::unique_ptr<Sphere>&& shape,
                    const Position& position,
                    const std::shared_ptr<Object>& owner_object,
                    const std::shared_ptr<ObjectRegistry>& registry,

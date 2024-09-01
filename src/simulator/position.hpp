@@ -9,13 +9,13 @@
 namespace rosa {
 
 struct Position {
-    int x, y, z;
+    double x, y, z;
     double theta , i , j , k;
 
     Position()
         : Position(0, 0, 0, 0.0, 0.0 , 0.0 , 0.0) {}
 
-    Position(int x, int y, int z, double theta, double i , double j , double k)
+    Position(double x, double y, double z, double theta, double i , double j , double k)
         : x(x)
         , y(y)
         , z(y)

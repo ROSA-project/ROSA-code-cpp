@@ -104,7 +104,7 @@ float World::pickDeltaT() {
     //     new_dt = std::min(new_dt, p.second->getRequiredDeltaT());
     // }
     // return new_dt;
-    return 10;
+    return 100; //msec
 }
 
 void World::run() {
@@ -183,14 +183,16 @@ void World::updateVisualizationJson(nlohmann::json& vis_json) {
 
 void World::dumpObjectInfo(nlohmann::json& vis_json) {
     // Dump shapes and owners info.
-    vis_json["shapes"] = nlohmann::json({});
-    vis_json["owners"] = nlohmann::json({});
+    //vis_json["shapes"] = nlohmann::json({});
+    //vis_json["owners"] = nlohmann::json({});
 
     for (auto& p: registry_->getObjects()) {
         auto oid_str = std::to_string(p.first);
-        vis_json["shapes"][oid_str] = p.second->getShape().toJson();
+        vis_json[oid_str] = nlohmann::json({});
+        vis_json[oid_str]["shape"] = nlohmann::json({});
+        vis_json[oid_str]["shape"] = p.second->getShape().toJson();
         if (auto owner = p.second->getOwnerObject().lock()) {
-            vis_json["owners"][oid_str] = std::to_string(owner->getObjectId());
+            //vis_json["owners"][oid_str] = std::to_string(owner->getObjectId());
         }
     }
     LOG_DEBUG("Dumped objects' info to vis json");

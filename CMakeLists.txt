@@ -59,6 +59,7 @@ set(SIM_SRC
     ${ROOT_SIM}/ball.cpp
     ${ROOT_SIM}/cube.cpp
     ${ROOT_SIM}/cylinder.cpp
+    ${ROOT_SIM}/sphere.cpp
     ${ROOT_SIM}/intersection_instance.cpp
     ${ROOT_SIM}/map.cpp
     ${ROOT_SIM}/object.cpp

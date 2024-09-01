@@ -6,6 +6,7 @@
 #include "common/util.hpp"
 #include "cube.hpp"
 #include "cylinder.hpp"
+#include "sphere.hpp"
 #include "shapeless.hpp"
 #include "vacuum_cleaner.hpp"
 #include "velocity.hpp"
@@ -86,7 +87,7 @@ std::shared_ptr<Object> Map::instantiateObject(std::shared_ptr<ObjectRegistry> r
     } else if (cname == "RigidPointBall") {
         // TODO hardcoding acceleration and velocity not to change
         // Erfan's code w/o discussion
-        auto u_ptr = std::unique_ptr<Cylinder>((Cylinder*)shape);
+        auto u_ptr = std::unique_ptr<Sphere>((Sphere*)shape);
         Velocity v(1.0, 1.0 , 0.0 , 0.0);
         return std::make_shared<RigidPointBall>(
             new_id, name, std::move(u_ptr), position, owner, registry_, v , 2);
@@ -132,6 +133,8 @@ Shape* Map::getShape(const nlohmann::json& json) {
         shape = new Cube();
     } else if (type == "Cylinder") {
         shape = new Cylinder();
+    } else if (type == "Sphere") {
+        shape = new Sphere();
     } else {
         rosa_assert(1 == 2, "Unknown shape type");
     }

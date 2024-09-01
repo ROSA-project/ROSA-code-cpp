@@ -1,12 +1,11 @@
 {
-    "rigid_point_ball2": {
+    "rigid_point_ball": {
         "class": "RigidPointBall",
         "position": {"x":0,"y":0,"z":0,"theta":0,"i":1, "j": 0 , "k": 0},
         "shape": {
-            "type": "Cylinder",
+            "type": "Sphere",
             "params": {
-                "radius": 0.2,
-                "height": 1
+                "radius": 5
             }
         }
     }

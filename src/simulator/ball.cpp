@@ -6,7 +6,7 @@ namespace rosa {
 
 RigidPointBall::RigidPointBall(const ObjectId& oid,
                                const std::string& name,
-                               std::unique_ptr<Cylinder>&& shape,
+                               std::unique_ptr<Sphere>&& shape,
                                const Position& position,
                                const std::shared_ptr<Object>& owner_object,
                                const std::shared_ptr<ObjectRegistry>& registry,

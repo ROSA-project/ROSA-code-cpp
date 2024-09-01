@@ -15,7 +15,7 @@ RigidPhysicalObject::RigidPhysicalObject(const ObjectId& oid,
     : Object(oid, name, std::move(shape), position, owner_object, registry)
      , acceleration_(acceleration) , velocity_(velocity)  {}
 
-Object::ObjectMap RigidPhysicalObject::evolve(float delta_t) {
+Object::ObjectMap RigidPhysicalObject::evolve(float delta_t_msec) {
     Position new_position;
     if (infinitesimalIntersectionOccured_) {
         // This is a bump which affects object's movement in this cycle
@@ -30,11 +30,13 @@ Object::ObjectMap RigidPhysicalObject::evolve(float delta_t) {
     // new_position.x += r * cos(new_position.phi * PI_CONST / 180);
     // new_position.y += r * sin(new_position.phi * PI_CONST / 180);
 
-    new_position.x += velocity_.v_x * delta_t ;
-    new_position.y += velocity_.v_y * delta_t ;
-    new_position.z += velocity_.v_z * delta_t ;
+    float delta_t = delta_t_msec/1000;
 
-    new_position.theta += velocity_.omega*delta_t;
+    new_position.x += velocity_.v_x * delta_t;
+    new_position.y += velocity_.v_y * delta_t ;
+    new_position.z += velocity_.v_z * delta_t;
+
+    new_position.theta += velocity_.omega * delta_t;
 
     updatePosition(new_position);
 
