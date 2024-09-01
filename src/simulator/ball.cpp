@@ -10,7 +10,7 @@ RigidPointBall::RigidPointBall(const ObjectId& oid,
                                const Position& position,
                                const std::shared_ptr<Object>& owner_object,
                                const std::shared_ptr<ObjectRegistry>& registry,
-                                Velocity& velocity,
+                               const Velocity& velocity,
                                float acceleration)
     : RigidPhysicalObject(oid,
                           name,
@@ -63,7 +63,7 @@ Position RigidPointBall::newPositionUponBump() {
     //                                 str(new_phi) + ", " + str(new_theta))
     //         logger.Logger.add_line("processing a bump finished.")
     //         return new_position
-}
+};
 
 float RigidPointBall::getRequiredDeltaT() const {
     // TODO just some dummy value

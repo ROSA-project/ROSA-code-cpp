@@ -19,7 +19,7 @@ public:
                    const Position& position,
                    const std::shared_ptr<Object>& owner_object,
                    const std::shared_ptr<ObjectRegistry>& registry,
-                   Velocity& velocity ,
+                   const Velocity& velocity ,
                    float acceleration);
 
     /**
