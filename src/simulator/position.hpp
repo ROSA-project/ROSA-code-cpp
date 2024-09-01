@@ -44,7 +44,9 @@ struct Position {
 
 
     nlohmann::json toJson() const {
-        nlohmann::json o = {{"x", x}, {"y", y}, {"z", z} , {"w" , cos(theta)} , {"i" , sin(theta)*i}, {"j" , sin(theta)*j} , {"k" , sin(theta)*k}};
+        
+        nlohmann::json o = {{"position", {x,y,z}},
+                         {"orientation", {cos(theta), sin(theta)*i, sin(theta)*j, sin(theta)*k}}};
         // in simulation.json which exists in visualizer repo you can see the exact form of quaternion = [w , i , j , k];
         return o;
     }
