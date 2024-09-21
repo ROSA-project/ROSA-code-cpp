@@ -1,6 +1,7 @@
 #include "ball.hpp"
 #include "intersection_instance.hpp"
 
+
 namespace rosa {
 
 RigidPointBall::RigidPointBall(const ObjectId& oid,
@@ -9,16 +10,16 @@ RigidPointBall::RigidPointBall(const ObjectId& oid,
                                const Position& position,
                                const std::shared_ptr<Object>& owner_object,
                                const std::shared_ptr<ObjectRegistry>& registry,
-                               float acceleration,
-                               float velocity)
+                               const Velocity& velocity,
+                               float acceleration)
     : RigidPhysicalObject(oid,
                           name,
                           std::move(shape),
                           position,
                           owner_object,
                           registry,
-                          acceleration,
-                          velocity) {}
+                          velocity,
+                          acceleration) {}
 
 Position RigidPointBall::newPositionUponBump() {
     Position p;
@@ -62,11 +63,12 @@ Position RigidPointBall::newPositionUponBump() {
     //                                 str(new_phi) + ", " + str(new_theta))
     //         logger.Logger.add_line("processing a bump finished.")
     //         return new_position
-}
+};
 
 float RigidPointBall::getRequiredDeltaT() const {
     // TODO just some dummy value
-    return 2 * getShape().getRadius() / velocity_ / 200;
+    //return 2 * getShape().getRadius() / velocity_ / 200;
+    return 2 * getShape().getRadius() / 200;
 }
 
 void RigidPointBall::calculateCircleBounce() {}

@@ -8,9 +8,11 @@
 #include "cylinder.hpp"
 #include "shapeless.hpp"
 #include "vacuum_cleaner.hpp"
+#include "velocity.hpp"
 
 #include <fstream>
 #include <stdexcept>
+
 
 namespace rosa {
 
@@ -85,8 +87,9 @@ std::shared_ptr<Object> Map::instantiateObject(std::shared_ptr<ObjectRegistry> r
         // TODO hardcoding acceleration and velocity not to change
         // Erfan's code w/o discussion
         auto u_ptr = std::unique_ptr<Cylinder>((Cylinder*)shape);
+        Velocity v(1.0, 1.0 , 0.0 , 0.0);
         return std::make_shared<RigidPointBall>(
-            new_id, name, std::move(u_ptr), position, owner, registry_, 0, 2);
+            new_id, name, std::move(u_ptr), position, owner, registry_, v , 2);
     } else if (cname == "VacuumCleanerV0") {
         auto u_ptr = std::unique_ptr<Cylinder>((Cylinder*)shape);
         // std::make_unique<Cylinder>(std::stod(params.at("diameter")),
