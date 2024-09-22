@@ -79,6 +79,7 @@ std::shared_ptr<Object> Map::instantiateObject(std::shared_ptr<ObjectRegistry> r
     }
 
     auto position = getPosition(json["position"]);
+    
     auto cname = json["class"].get<std::string>();
     if (cname == "Box") {
         auto u_ptr = std::unique_ptr<Cube>((Cube*)shape);
@@ -88,11 +89,12 @@ std::shared_ptr<Object> Map::instantiateObject(std::shared_ptr<ObjectRegistry> r
         // TODO hardcoding acceleration and velocity not to change
         // Erfan's code w/o discussion
         auto u_ptr = std::unique_ptr<Sphere>((Sphere*)shape);
-        Velocity v(1.0, 1.0 , 0.0 , 0.0);
+        auto velocity = getVelocity(json["velocity"]);
         return std::make_shared<RigidPointBall>(
-            new_id, name, std::move(u_ptr), position, owner, registry_, v , 2);
+            new_id, name, std::move(u_ptr), position, owner, registry_, velocity , 2);
     } else if (cname == "VacuumCleanerV0") {
         auto u_ptr = std::unique_ptr<Cylinder>((Cylinder*)shape);
+        
         // std::make_unique<Cylinder>(std::stod(params.at("diameter")),
         // std::stod(params.at("height"))),
         return std::make_shared<VacuumCleaner>(
@@ -148,6 +150,12 @@ Position Map::getPosition(const nlohmann::json& json) {
     Position p;
     p.fromJson(json);
     return p;
+}
+
+Velocity Map::getVelocity(const nlohmann::json& json) {
+    Velocity v;
+    v.fromJson(json);
+    return v;
 }
 
 } // namespace rosa
