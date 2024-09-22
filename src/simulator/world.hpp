@@ -97,14 +97,14 @@ private:
      */
     float pickDeltaT();
 
-    void updateVisualizationJson(nlohmann::json& json);
+    void updateVisualizationJson(nlohmann::ordered_json& json);
 
     /**
      * Dump visualization info for shapes to the output json file
      */
-    void dumpObjectInfo(nlohmann::json& vis_json);
+    void dumpObjectInfo(nlohmann::ordered_json& vis_json);
 
-    void writeVisDataToFile(nlohmann::json& vis_json, const std::string& vis_filename);
+    void writeVisDataToFile(nlohmann::ordered_json& vis_json, const std::string& vis_filename);
 };
 
 } // namespace rosa

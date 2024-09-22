@@ -109,8 +109,8 @@ float World::pickDeltaT() {
 
 void World::run() {
     // The json object containing data to be used by the visualizer
-    nlohmann::json vis_json_objects;
-    nlohmann::json vis_json_sim_nonuniform;
+    nlohmann::ordered_json vis_json_objects;
+    nlohmann::ordered_json vis_json_sim_nonuniform;
     // TODO not yet implemented, but anyway the nonuniform is forced to be uniform
     //nlohmann::json vis_json_sim_uniform;
 
@@ -164,13 +164,13 @@ void World::run() {
     }
 }
 
-void World::updateVisualizationJson(nlohmann::json& vis_json) {
+void World::updateVisualizationJson(nlohmann::ordered_json& vis_json) {
     std::stringstream key_stream;
     while (timeSinceStartMSec_ >= nextFrameTimeMsec_) {
         key_stream << std::fixed << std::setprecision(VIZ_DECIMAL_LENGTH)
                    << nextFrameTimeMsec_;
         std::string key = key_stream.str();
-        vis_json[key] = nlohmann::json({});
+        vis_json[key] = nlohmann::ordered_json({});
 
         // Populate with the positions of objects
         for (auto& p: registry_->getObjects()) {
@@ -181,15 +181,15 @@ void World::updateVisualizationJson(nlohmann::json& vis_json) {
     }
 }
 
-void World::dumpObjectInfo(nlohmann::json& vis_json) {
+void World::dumpObjectInfo(nlohmann::ordered_json& vis_json) {
     // Dump shapes and owners info.
     //vis_json["shapes"] = nlohmann::json({});
     //vis_json["owners"] = nlohmann::json({});
 
     for (auto& p: registry_->getObjects()) {
         auto oid_str = std::to_string(p.first);
-        vis_json[oid_str] = nlohmann::json({});
-        vis_json[oid_str]["shape"] = nlohmann::json({});
+        vis_json[oid_str] = nlohmann::ordered_json({});
+        vis_json[oid_str]["shape"] = nlohmann::ordered_json({});
         vis_json[oid_str]["shape"] = p.second->getShape().toJson();
         if (auto owner = p.second->getOwnerObject().lock()) {
             //vis_json["owners"][oid_str] = std::to_string(owner->getObjectId());
@@ -198,7 +198,7 @@ void World::dumpObjectInfo(nlohmann::json& vis_json) {
     LOG_DEBUG("Dumped objects' info to vis json");
 }
 
-void World::writeVisDataToFile(nlohmann::json& vis_json, const std::string& vis_filename) {
+void World::writeVisDataToFile(nlohmann::ordered_json& vis_json, const std::string& vis_filename) {
     std::ofstream o(vis_filename);
     o << std::setw(4) << vis_json << std::endl;
 
