@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
-set(CMAKE_C_COMPILER "C:/msys64/ucrt64/bin/gcc.exe")
-set(CMAKE_CXX_COMPILER "C:/msys64/ucrt64/bin/g++.exe")
+#set(CMAKE_C_COMPILER "C:/msys64/ucrt64/bin/gcc.exe")
+#set(CMAKE_CXX_COMPILER "C:/msys64/ucrt64/bin/g++.exe")
 
 
 project (RosaSimulator VERSION 0.1)
@@ -42,6 +42,12 @@ else()
     )
 endif()
 
+## google test
+# Add GoogleTest as a subdirectory
+add_subdirectory(external_deps/googletest)
+
+# Include GoogleTest headers
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 # ==== Common include path ==== 
 
@@ -55,6 +61,10 @@ include_directories("${PROJECT_BINARY_DIR}"
 
 set(ROOT_SIM ${PROJECT_SOURCE_DIR}/src/simulator)
 
+set(E2E_TEST_SRC
+    ${PROJECT_SOURCE_DIR}/src/e2e-tests/freespace_motion_test.cpp    
+)
+
 set(SIM_SRC
     ${ROOT_SIM}/ball.cpp
     ${ROOT_SIM}/cube.cpp
@@ -64,13 +74,21 @@ set(SIM_SRC
     ${ROOT_SIM}/map.cpp
     ${ROOT_SIM}/object.cpp
     ${ROOT_SIM}/rigid_physical_obj.cpp
-    ${ROOT_SIM}/run_simulator.cpp
     ${ROOT_SIM}/vacuum_cleaner.cpp
     ${ROOT_SIM}/world.cpp
     ${PROJECT_SOURCE_DIR}/src/common/util.cpp
     ${PROJECT_SOURCE_DIR}/src/config.cpp
 )
 
-add_executable(RosaSimulator ${SIM_SRC})
+#add_executable(RosaSimulator ${SIM_SRC} ${ROOT_SIM}/run_simulator.cpp)
+add_executable(E2E_tests ${E2E_TEST_SRC} ${SIM_SRC})
 
-target_include_directories(RosaSimulator PUBLIC "src/simulator" )
+#target_include_directories(RosaSimulator PUBLIC "src/simulator" )
+target_include_directories(E2E_tests PUBLIC "src/simulator" )
+
+target_link_libraries(E2E_tests gtest_main)
+
+#include(GoogleTest)
+
+#gtest_discover_tests(E2E_tests)
+

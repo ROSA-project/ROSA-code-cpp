@@ -1,5 +1,6 @@
 {
     "rigid_point_ball": {
+        "tester-id": 0,
         "class": "RigidPointBall",
         "position": { "x":0 , "y":0 , "z":0 , "theta":0 , "i":1 , "j": 0 , "k": 0 },
         "velocity": {"v_x" :1 , "v_y": 0 , "v_z": 1 , "omega" : 1},

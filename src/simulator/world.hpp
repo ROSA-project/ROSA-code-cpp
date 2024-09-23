@@ -39,6 +39,10 @@ public:
      */
     void run();
 
+    ObjectId getTesterID(int);
+
+    Position getObjectPosition(ObjectId);
+
 private:
     // An instance of ObjectRegistry through which one can access list of all objects,
     std::shared_ptr<ObjectRegistry> registry_;
