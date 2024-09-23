@@ -69,6 +69,9 @@ std::shared_ptr<Object> Map::instantiateObject(std::shared_ptr<ObjectRegistry> r
                                                const std::string& name,
                                                std::shared_ptr<Object> owner) {
     auto new_id = registry->getNextAvailableId();
+    if (json_has(json, "tester-id")) {
+        registry->addTesterID(new_id, json["tester-id"]);
+    }
 
     Shape* shape = nullptr;
     shape = getShape(json);
@@ -88,7 +91,7 @@ std::shared_ptr<Object> Map::instantiateObject(std::shared_ptr<ObjectRegistry> r
         // TODO hardcoding acceleration and velocity not to change
         // Erfan's code w/o discussion
         auto u_ptr = std::unique_ptr<Sphere>((Sphere*)shape);
-        Velocity v(1.0, 1.0 , 0.0 , 0.0);
+        Velocity v(1.0, 0 , 0.0 , 0.0);
         return std::make_shared<RigidPointBall>(
             new_id, name, std::move(u_ptr), position, owner, registry_, v , 2);
     } else if (cname == "VacuumCleanerV0") {

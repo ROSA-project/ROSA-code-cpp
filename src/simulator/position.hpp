@@ -24,6 +24,10 @@ struct Position {
         , j(j)
         , k(j){};
 
+    double distance(const Position& p) {
+        return sqrt(pow(x - p.x , 2) + pow(y - p.y , 2) + pow(z - p.z , 2));
+    }
+
     // static std::tuple<float, float, float>
     // polarToCartesian(float r, float phi, float theta) {
     //     float x = r * sin(theta * PI_CONST / 180) * cos(phi * PI_CONST / 180);

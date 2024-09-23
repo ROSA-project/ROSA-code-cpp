@@ -119,6 +119,8 @@ public:
      */
     bool isEvolvable() const;
 
+    Position getPosition();
+
 protected:
     ObjectId oid_;
     const std::string name_;

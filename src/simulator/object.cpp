@@ -81,4 +81,7 @@ bool Object::timeToDie() const { return false; }
 
 bool Object::isEvolvable() const { return evolvable_; }
 
+// TODO const or something?
+Position Object::getPosition() { return position_; }
+
 } // namespace rosa

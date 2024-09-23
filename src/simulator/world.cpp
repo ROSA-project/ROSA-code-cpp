@@ -211,4 +211,15 @@ void World::writeVisDataToFile(nlohmann::json& vis_json, const std::string& vis_
     LOG_DEBUG("Wrote vis json to file: {}", vis_filename);
 }
 
+ObjectId World::getTesterID(int testerID){
+    return registry_->getTesterID(testerID);
+}
+
+Position World::getObjectPosition(ObjectId objID){
+    auto& objs = registry_->getObjects();
+    assert(objs.find(objID) != objs.end() && "object ID does not exist");
+    return objs[objID]->getPosition();
+}
+
+
 } // namespace rosa
