@@ -88,7 +88,7 @@ target_include_directories(E2E_tests PUBLIC "src/simulator" )
 
 target_link_libraries(E2E_tests gtest_main)
 
-#include(GoogleTest)
+include(GoogleTest)
 
-#gtest_discover_tests(E2E_tests)
+gtest_discover_tests(E2E_tests)
 
