@@ -80,6 +80,8 @@ set(SIM_SRC
     ${PROJECT_SOURCE_DIR}/src/config.cpp
 )
 
+enable_testing()
+
 #add_executable(RosaSimulator ${SIM_SRC} ${ROOT_SIM}/run_simulator.cpp)
 add_executable(E2E_tests ${E2E_TEST_SRC} ${SIM_SRC})
 

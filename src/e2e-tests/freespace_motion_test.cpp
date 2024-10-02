@@ -4,7 +4,7 @@
 #include <cmath>
 
 // Demonstrate some basic assertions.
-TEST(HelloTest, BasicAssertions) {
+TEST(FreeSpaceMotionSingleBall, NoTorqueAxisAligned) {
   rosa::WorldConfig w_config;
   w_config.simDurationMsec = 1000; 
   w_config.visFrameIntervalMsec = 250;  // 25 msec
