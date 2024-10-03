@@ -82,10 +82,10 @@ set(SIM_SRC
 
 enable_testing()
 
-#add_executable(RosaSimulator ${SIM_SRC} ${ROOT_SIM}/run_simulator.cpp)
+add_executable(RosaSimulator ${SIM_SRC} ${ROOT_SIM}/run_simulator.cpp)
 add_executable(E2E_tests ${E2E_TEST_SRC} ${SIM_SRC})
 
-#target_include_directories(RosaSimulator PUBLIC "src/simulator" )
+target_include_directories(RosaSimulator PUBLIC "src/simulator" )
 target_include_directories(E2E_tests PUBLIC "src/simulator" )
 
 target_link_libraries(E2E_tests gtest_main)
