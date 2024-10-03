@@ -18,11 +18,11 @@ struct Position {
     Position(double x, double y, double z, double theta, double i , double j , double k)
         : x(x)
         , y(y)
-        , z(y)
+        , z(z)
         ,theta(theta)
         , i(i)
         , j(j)
-        , k(j){};
+        , k(k){};
 
     double distance(const Position& p) {
         return sqrt(pow(x - p.x , 2) + pow(y - p.y , 2) + pow(z - p.z , 2));

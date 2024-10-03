@@ -1,0 +1,26 @@
+{
+    "rigid_point_ball_0": {
+        "tester-id": 0,
+        "class": "RigidPointBall",
+        "position": { "x":0 , "y":0 , "z":0 , "theta":0 , "i":1 , "j": 0 , "k": 0 },
+        "velocity": {"v_x" :1 , "v_y": 0 , "v_z": 0 , "omega" : 0},
+        "shape": {
+            "type": "Sphere",
+            "params": {
+                "radius": 5
+            }
+        }
+    },
+    "rigid_point_ball_1": {
+        "tester-id": 1,
+        "class": "RigidPointBall",
+        "position": { "x":10 , "y":10 , "z":10 , "theta":0 , "i":1 , "j": 0 , "k": 0 },
+        "velocity": {"v_x" :1 , "v_y": 1 , "v_z": 1 , "omega" : 0},
+        "shape": {
+            "type": "Sphere",
+            "params": {
+                "radius": 4
+            }
+        }
+    }
+}
