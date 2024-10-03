@@ -7,15 +7,16 @@
 #include <algorithm>
 #include <ctime>
 #include <fstream>
+#include <sstream>
 
 namespace rosa {
 
 World::World(const std::string& map_filename,
-             const std::string& vis_filename,
+             const std::string& vis_filename_prefix,
              const WorldConfig w_config)
     : numEvolutions_(0)
     , timeSinceStartMSec_(0)
-    , visOutputFilename_(vis_filename)
+    , visOutputFilenamePrefix_(vis_filename_prefix)
     , durationMSec_(w_config.simDurationMsec) // 10 seconds
     , visFrameIntervalMsec_(w_config.visFrameIntervalMsec)
     , nextFrameTimeMsec_(0) {
@@ -103,12 +104,15 @@ float World::pickDeltaT() {
     //     new_dt = std::min(new_dt, p.second->getRequiredDeltaT());
     // }
     // return new_dt;
-    return 10;
+    return 100; //msec
 }
 
 void World::run() {
     // The json object containing data to be used by the visualizer
-    nlohmann::json vis_json;
+    nlohmann::ordered_json vis_json_objects;
+    nlohmann::ordered_json vis_json_sim_nonuniform;
+    // TODO not yet implemented, but anyway the nonuniform is forced to be uniform
+    //nlohmann::json vis_json_sim_uniform;
 
     float last_progress = 0;
     bool success = true;
@@ -141,16 +145,17 @@ void World::run() {
         // evolution)
         registerIntersections(intersection_result);
 
-        updateVisualizationJson(vis_json);
+        updateVisualizationJson(vis_json_sim_nonuniform);
 
         timeSinceStartMSec_ += delta_t;
         numEvolutions_ += 1;
     }
     LOG_DEBUG("Finished the simulation cycles.");
 
-    dumpObjectInfo(vis_json);
+    dumpObjectInfo(vis_json_objects);
 
-    writeVisDataToFile(vis_json);
+    writeVisDataToFile(vis_json_objects, visOutputFilenamePrefix_ + "_objects.json");
+    writeVisDataToFile(vis_json_sim_nonuniform, visOutputFilenamePrefix_ + "_sim_nonuniform.json");
 
     if (success) {
         LOG_INFO("Simulation ended successfully!");
@@ -159,13 +164,13 @@ void World::run() {
     }
 }
 
-void World::updateVisualizationJson(nlohmann::json& vis_json) {
+void World::updateVisualizationJson(nlohmann::ordered_json& vis_json) {
     std::stringstream key_stream;
     while (timeSinceStartMSec_ >= nextFrameTimeMsec_) {
         key_stream << std::fixed << std::setprecision(VIZ_DECIMAL_LENGTH)
                    << nextFrameTimeMsec_;
         std::string key = key_stream.str();
-        vis_json[key] = nlohmann::json({});
+        vis_json[key] = nlohmann::ordered_json({});
 
         // Populate with the positions of objects
         for (auto& p: registry_->getObjects()) {
@@ -176,32 +181,45 @@ void World::updateVisualizationJson(nlohmann::json& vis_json) {
     }
 }
 
-void World::dumpObjectInfo(nlohmann::json& vis_json) {
+void World::dumpObjectInfo(nlohmann::ordered_json& vis_json) {
     // Dump shapes and owners info.
-    vis_json["shapes"] = nlohmann::json({});
-    vis_json["owners"] = nlohmann::json({});
+    //vis_json["shapes"] = nlohmann::json({});
+    //vis_json["owners"] = nlohmann::json({});
 
     for (auto& p: registry_->getObjects()) {
         auto oid_str = std::to_string(p.first);
-        vis_json["shapes"][oid_str] = p.second->getShape().toJson();
+        vis_json[oid_str] = nlohmann::ordered_json({});
+        vis_json[oid_str]["shape"] = nlohmann::ordered_json({});
+        vis_json[oid_str]["shape"] = p.second->getShape().toJson();
         if (auto owner = p.second->getOwnerObject().lock()) {
-            vis_json["owners"][oid_str] = std::to_string(owner->getObjectId());
+            //vis_json["owners"][oid_str] = std::to_string(owner->getObjectId());
         }
     }
     LOG_DEBUG("Dumped objects' info to vis json");
 }
 
-void World::writeVisDataToFile(nlohmann::json& vis_json) {
-    std::ofstream o(visOutputFilename_);
+void World::writeVisDataToFile(nlohmann::ordered_json& vis_json, const std::string& vis_filename) {
+    std::ofstream o(vis_filename);
     o << std::setw(4) << vis_json << std::endl;
 
-    std::ofstream file(visOutputFilename_);
+    std::ofstream file(vis_filename);
     if (config::prettified_json_output) {
         file << std::setw(4) << vis_json << std::endl;
     } else {
         file << vis_json;
     }
-    LOG_DEBUG("Wrote vis json to file: {}", visOutputFilename_);
+    LOG_DEBUG("Wrote vis json to file: {}", vis_filename);
 }
+
+ObjectId World::getTesterID(int testerID){
+    return registry_->getTesterID(testerID);
+}
+
+Position World::getObjectPosition(ObjectId objID){
+    auto& objs = registry_->getObjects();
+    assert(objs.find(objID) != objs.end() && "object ID does not exist");
+    return objs[objID]->getPosition();
+}
+
 
 } // namespace rosa

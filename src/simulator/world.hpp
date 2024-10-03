@@ -28,7 +28,7 @@ class World {
 
 public:
     World(const std::string& map_filename,
-          const std::string& vis_filename,
+          const std::string& vis_filename_prefix,
           const WorldConfig w_config);
 
     /**
@@ -38,6 +38,10 @@ public:
      * each object is evolved.
      */
     void run();
+
+    ObjectId getTesterID(int);
+
+    Position getObjectPosition(ObjectId);
 
 private:
     // An instance of ObjectRegistry through which one can access list of all objects,
@@ -52,7 +56,7 @@ private:
     // Simulator's current time in millisecond.
     uint64_t timeSinceStartMSec_;
 
-    const std::string visOutputFilename_;
+    const std::string visOutputFilenamePrefix_;
 
     // How many milli seconds the world instance will exist for.
     // 0 is unlimited.
@@ -97,14 +101,14 @@ private:
      */
     float pickDeltaT();
 
-    void updateVisualizationJson(nlohmann::json& json);
+    void updateVisualizationJson(nlohmann::ordered_json& json);
 
     /**
      * Dump visualization info for shapes to the output json file
      */
-    void dumpObjectInfo(nlohmann::json& vis_json);
+    void dumpObjectInfo(nlohmann::ordered_json& vis_json);
 
-    void writeVisDataToFile(nlohmann::json& vis_json);
+    void writeVisDataToFile(nlohmann::ordered_json& vis_json, const std::string& vis_filename);
 };
 
 } // namespace rosa

@@ -10,27 +10,36 @@ RigidPhysicalObject::RigidPhysicalObject(const ObjectId& oid,
                                          const Position& position,
                                          const std::weak_ptr<Object>& owner_object,
                                          const std::shared_ptr<ObjectRegistry>& registry,
-                                         float acceleration,
-                                         float velocity)
+                                         const Velocity& velocity ,
+                                         float acceleration)
     : Object(oid, name, std::move(shape), position, owner_object, registry)
-    , acceleration_(acceleration)
-    , velocity_(velocity) {}
+     , acceleration_(acceleration) , velocity_(velocity)  {}
 
-Object::ObjectMap RigidPhysicalObject::evolve(float delta_t) {
+Object::ObjectMap RigidPhysicalObject::evolve(float delta_t_msec) {
     Position new_position;
     if (infinitesimalIntersectionOccured_) {
         // This is a bump which affects object's movement in this cycle
         // logger.Logger.add_line("RigidPhysicalObject infinitestimal intersection, "
         //                        "redirecting to update_state_upon_bump")
-        new_position = newPositionUponBump();
+      //  new_position = newPositionUponBump();
     } else {
         new_position = position_;
     }
 
-    auto r = velocity_ * delta_t;
-    new_position.x += r * cos(new_position.phi * PI_CONST / 180);
-    new_position.y += r * sin(new_position.phi * PI_CONST / 180);
+    // auto r = velocity_.v_x * delta_t;
+    // new_position.x += r * cos(new_position.phi * PI_CONST / 180);
+    // new_position.y += r * sin(new_position.phi * PI_CONST / 180);
+
+    float delta_t = delta_t_msec/1000;
+
+    new_position.x += velocity_.v_x * delta_t;
+    new_position.y += velocity_.v_y * delta_t ;
+    new_position.z += velocity_.v_z * delta_t;
+
+    new_position.theta += velocity_.omega * delta_t;
+
     updatePosition(new_position);
+
 
     return {};
 }

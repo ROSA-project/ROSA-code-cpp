@@ -71,55 +71,53 @@ Object::ObjectMap VacuumCleaner::evolve(float delta_t) {
         // No hit so no unexpcted change of state
         elapsedTimeOnStateSec_ += delta_t;
         auto new_position = position_;
-        if (stateDurationSec_ != -1) {
-            // We're in a duration-limited state
-            if (elapsedTimeOnStateSec_ >= stateDurationSec_) {
-                // Time to go back to normal operation of forward
-                positionState_ = PositionState::FORWARD;
-                stateDurationSec_ = -1;
-            }
-        }
-        switch (positionState_) {
-        case PositionState::FORWARD: {
-            auto distance = forwardSpeed_ * delta_t;
-            // That is when oriented toward left we get decreasing x
-            new_position.x += distance * cos(PI_CONST / 180 * position_.phi);
-            // That is when oriented toward buttom we get decreasing y
-            new_position.y += distance * sin(PI_CONST / 180 * position_.phi);
-            break;
-        }
-        case PositionState::TURN_LEFT: {
-            // Left meaning increasing phi
-            auto rotation = turningSpeed_ * delta_t; // in degrees
-            new_position.phi += rotation;
-            break;
-        }
-        case PositionState::REVERSE: {
-            if (elapsedTimeOnStateSec_ == 0) {
-                // Reversing not began yet, reverse the direction
-                new_position.phi = -position_.phi;
-            }
-            auto distance = reverseSpeed_ * delta_t;
-            // That is when oriented toward left we get decreasing x
-            new_position.x += distance * cos(PI_CONST / 180 * position_.phi);
-            // That is when oriented toward buttom we get decreasing y
-            new_position.y += distance * sin(PI_CONST / 180 * position_.phi);
-            break;
-        }
-        default:
-            rosa_assert(1 == 2, "Invalid position state");
-        }
+        // if (stateDurationSec_ != -1) {
+        //     // We're in a duration-limited state
+        //     if (elapsedTimeOnStateSec_ >= stateDurationSec_) {
+        //         // Time to go back to normal operation of forward
+        //         positionState_ = PositionState::FORWARD;
+        //         stateDurationSec_ = -1;
+        //     }
+        // }
+        // switch (positionState_) {
+        // case PositionState::FORWARD: {
+        //     auto distance = forwardSpeed_ * delta_t;
+        //     // That is when oriented toward left we get decreasing x
+        //     new_position.x += distance * cos(PI_CONST / 180 * position_.phi);
+        //     // That is when oriented toward buttom we get decreasing y
+        //     new_position.y += distance * sin(PI_CONST / 180 * position_.phi);
+        //     break;
+        // }
+        // case PositionState::TURN_LEFT: {
+        //     // Left meaning increasing phi
+        //     auto rotation = turningSpeed_ * delta_t; // in degrees
+        //     new_position.phi += rotation;
+        //     break;
+        // }
+        // case PositionState::REVERSE: {
+        //     if (elapsedTimeOnStateSec_ == 0) {
+        //         // Reversing not began yet, reverse the direction
+        //         new_position.phi = -position_.phi;
+        //     }
+        //     auto distance = reverseSpeed_ * delta_t;
+        //     // That is when oriented toward left we get decreasing x
+        //     new_position.x += distance * cos(PI_CONST / 180 * position_.phi);
+        //     // That is when oriented toward buttom we get decreasing y
+        //     new_position.y += distance * sin(PI_CONST / 180 * position_.phi);
+        //     break;
+        // }
+       // default:
+         //   rosa_assert(1 == 2, "Invalid position state");
+        
         updatePosition(new_position);
         sensor_->updatePosition(new_position);
-    }
 
     // print("x=" + str(self.position.x) + " ," + "y=" + str(self.position.y) + " ," + \
     //    "phi=" + str(self.position.phi))
-
+    }
     totalElapsedTimeSec_ += delta_t;
     return {};
 }
-
 float VacuumCleaner::getRequiredDeltaT() const {
     // Say, enough to capture turning or reversing duration in 10 cycles
     return std::min(turnOnHitAngleDegree_ / turningSpeed_, reverseOnHitDurationSec_) / 10;
