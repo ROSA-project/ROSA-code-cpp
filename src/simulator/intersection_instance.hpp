@@ -22,7 +22,7 @@ public:
      * Merely provides access to internal attribute
      * TODO: fix the comment
      */
-    bool doesIntersect() { return doesIntersect_; }
+    bool doesIntersect(){return doesIntersect_;};
 
     bool isInfinitesimal() {
         rosa_assert(doesIntersect_,

@@ -18,6 +18,8 @@ public:
 
     float getHeight() const { return height_; }
 
+    std::string getType() const override {return "Cylinder";}
+
     std::shared_ptr<Box> boundingBox(const Position& position) override;
 
     bool isShapeless() const override { return false; }

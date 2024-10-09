@@ -8,6 +8,7 @@
 #include <ctime>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 namespace rosa {
 
@@ -82,6 +83,7 @@ std::pair<World::InInType, bool> World::intersect() {
                     // decide later.
                     non_infinitesimal_intersect = true;
                 }
+
             }
         }
         // TODO: break here? this function may require a restructuring.

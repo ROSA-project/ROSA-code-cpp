@@ -17,7 +17,7 @@ public:
     std::shared_ptr<Box> boundingBox(const Position& position) override {
         return std::shared_ptr<Box>(nullptr);
     }
-
+    std::string getType() const override {return "Shpeless";}
     bool isShapeless() const override { return true; }
 
     nlohmann::json toJson() const override {
