@@ -18,7 +18,7 @@ IntersectionInstance::IntersectionInstance(const Object& obj1, const Object& obj
 
 void IntersectionInstance::intersect() {
     // TODO a temporary implementation for pairs of supported geometrical shapes
-    if( ((obj1_.getShape().getType() ) == "Sphere") && (( obj1_.getShape().getType() ) == "Sphere") ){
+    if( ((obj1_.getShape().getType() ) == "Sphere") && (( obj2_.getShape().getType() ) == "Sphere") ){
     
 
       double d = sqrt(pow(obj2_.getPosition().x - obj1_.getPosition().x, 2) + 
