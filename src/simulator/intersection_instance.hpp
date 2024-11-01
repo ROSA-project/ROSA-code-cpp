@@ -16,7 +16,7 @@ public:
     /**
      * The entry point for performing the intersection algorithm on its two objects.
      */
-    void intersect();
+    double intersect();
 
     /**
      * Merely provides access to internal attribute
