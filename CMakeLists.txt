@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
-set(CMAKE_C_COMPILER "C:/msys64/ucrt64/bin/gcc.exe")
-set(CMAKE_CXX_COMPILER "C:/msys64/ucrt64/bin/g++.exe")
+
+if (WIN32)
+    if (NOT DEFINED CMAKE_C_COMPILER)
+        find_program(CMAKE_C_COMPILER NAMES gcc.exe PATHS "C:/msys64/ucrt64/bin" NO_DEFAULT_PATH)
+    endif()
+    if (NOT DEFINED CMAKE_CXX_COMPILER)
+        find_program(CMAKE_CXX_COMPILER NAMES g++.exe PATHS "C:/msys64/ucrt64/bin" NO_DEFAULT_PATH)
+    endif()
+endif()
 
 
 project (RosaSimulator VERSION 0.1)
