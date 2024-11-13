@@ -7,6 +7,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include "velocity.hpp"
 
 namespace rosa {
 
@@ -43,6 +44,8 @@ private:
     static Shape* getShape(const nlohmann::json& json);
 
     static Position getPosition(const nlohmann::json& json);
+
+    static Velocity getVelocity(const nlohmann::json& json);
 };
 
 } // namespace rosa

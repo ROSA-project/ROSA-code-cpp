@@ -4,6 +4,7 @@
 #include "object_registry.hpp"
 #include "position.hpp"
 #include "shape.hpp"
+#include "velocity.hpp"
 
 namespace rosa {
 
@@ -20,8 +21,8 @@ public:
                         const Position& position,
                         const std::weak_ptr<Object>& owner_object,
                         const std::shared_ptr<ObjectRegistry>& registry,
-                        float acceleration,
-                        float velocity);
+                        const Velocity& velocity , 
+                        float acceleration);
 
     /**
      * Overriding that of Object. A RigidPhysicalObject basically keeps moving based on
@@ -46,7 +47,7 @@ public:
 
 protected:
     float acceleration_;
-    float velocity_;
+    Velocity velocity_;
 };
 
 } // namespace rosa

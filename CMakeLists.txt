@@ -1,9 +1,18 @@
 cmake_minimum_required(VERSION 3.10)
 
+if (WIN32)
+    if (NOT DEFINED CMAKE_C_COMPILER)
+        find_program(CMAKE_C_COMPILER NAMES gcc.exe PATHS "C:/msys64/ucrt64/bin" NO_DEFAULT_PATH)
+    endif()
+    if (NOT DEFINED CMAKE_CXX_COMPILER)
+        find_program(CMAKE_CXX_COMPILER NAMES g++.exe PATHS "C:/msys64/ucrt64/bin" NO_DEFAULT_PATH)
+    endif()
+endif()
+
+
 project (RosaSimulator VERSION 0.1)
 
 # ==== Compiler flags ====
-
 set(CMAKE_CXX_STANDARD 17) # gnu++-17
 # set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall") # Warn all
@@ -57,6 +66,7 @@ set(SIM_SRC
     ${ROOT_SIM}/ball.cpp
     ${ROOT_SIM}/cube.cpp
     ${ROOT_SIM}/cylinder.cpp
+    ${ROOT_SIM}/sphere.cpp
     ${ROOT_SIM}/intersection_instance.cpp
     ${ROOT_SIM}/map.cpp
     ${ROOT_SIM}/object.cpp
