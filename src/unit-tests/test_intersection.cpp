@@ -6,7 +6,7 @@
 
 double thresholdFraction = 0.015;
 
-TEST(IntrsctionTest, NoIntersection) {
+TEST(IntersctionTest, NoIntersection) {
 
     auto registry = std::make_shared<rosa::ObjectRegistry>();
     std::weak_ptr<rosa::Object> owner_object; // nullptr
@@ -17,9 +17,11 @@ TEST(IntrsctionTest, NoIntersection) {
 
     auto sphere1 = std::make_unique<rosa::Sphere>(5.0);
     auto sphere2 = std::make_unique<rosa::Sphere>(3.0);
+    auto sphere3 = std::make_unique<rosa::Sphere>(5.0);
 
     rosa::Position p1{1, 4, 9, 0, 0, 0, 0};
     rosa::Position p2{20, 15, 25, 0, 0, 0, 0};
+    rosa::Position p3{1, 4, 9, 0, 0, 0, 0};
 
     auto obj1 = std::make_shared<rosa::Object>(
         objID1,
@@ -42,8 +44,8 @@ TEST(IntrsctionTest, NoIntersection) {
     auto obj3 = std::make_shared<rosa::Object>(
         objID3,
         "TestObject3",
-        std::move(sphere1),
-        p1,
+        std::move(sphere3),
+        p3,
         owner_object,
         registry
     );
@@ -127,6 +129,7 @@ TEST(IntrsctionTest, OuterTangency) {
 
 
     auto sphere1 = std::make_unique<rosa::Sphere>(5.0);
+    auto sphere2 = std::make_unique<rosa::Sphere>(5.0);
 
 
     rosa::Position p1{1, 4, 9, 0, 0, 0, 0};
@@ -144,7 +147,7 @@ TEST(IntrsctionTest, OuterTangency) {
     auto obj2 = std::make_shared<rosa::Object>(
         objID2,
         "TestObject2",
-        std::move(sphere1),
+        std::move(sphere2),
         p2,
         owner_object,
         registry
@@ -183,7 +186,7 @@ TEST(IntrsctionTest, InnerTangency) {
     auto obj2 = std::make_shared<rosa::Object>(
         objID2,
         "TestObject2",
-        std::move(sphere1),
+        std::move(sphere2),
         p2,
         owner_object,
         registry
@@ -222,7 +225,7 @@ TEST(IntrsctionTest, oneSphereInsideAnother) {
     auto obj2 = std::make_shared<rosa::Object>(
         objID2,
         "TestObject2",
-        std::move(sphere1),
+        std::move(sphere2),
         p2,
         owner_object,
         registry
