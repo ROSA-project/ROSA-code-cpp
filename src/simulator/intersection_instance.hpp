@@ -2,6 +2,8 @@
 
 #include "common/util.hpp"
 #include "object.hpp"
+#include <vector>
+#include <utility>
 
 namespace rosa {
 
@@ -17,7 +19,7 @@ public:
      * The entry point for performing the intersection algorithm on its two objects.
      */
     double intersect();
-
+    std::pair<std::vector<double>, std::vector<double>> reversion();
     /**
      * Merely provides access to internal attribute
      * TODO: fix the comment

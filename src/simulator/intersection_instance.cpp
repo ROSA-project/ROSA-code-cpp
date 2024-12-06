@@ -2,8 +2,10 @@
 #include <iostream>
 #include <cmath>  
 #include <algorithm>
+#include <vector>
+#include <functional>
+#include <utility>
 #include "sphere.hpp"
-
 
 namespace rosa {
 
@@ -45,15 +47,74 @@ double IntersectionInstance::intersect() {
         double v_cap1 = (M_PI / 3.0) * (pow(h1, 2) * (3.0 * sphere1.getRadius() - h1));
         double v_cap2 = (M_PI / 3.0) * (pow(h2, 2) * (3.0 * sphere2.getRadius() - h2));  
 
-        double threshold = std::min(0.01 * v_s1 , 0.01 * v_s2);
+        double threshold = std::min(0.015 * v_s1 , 0.015 * v_s2);
 
         if((v_cap1 + v_cap2) < threshold) {return 0.0;}
 
+        /**
+         * TODO: ask vesal if line 57 , 58 are a common practice.
+         */
         doesIntersect_ = true;
         isInfinitesimal_= true;
+        // we want to move the information to the rightest place, so we need to create the interface!
+        // we can not do any ting external in one function specially when you're working with object oriented programming and classes :)) yup ?
         return (v_cap1 + v_cap2 );      
     }
+}
 
+std::pair<std::vector<double>, std::vector<double>> IntersectionInstance::reversion(){
+ if( (obj1_.getShape().getType() ) == "Sphere" && ( obj2_.getShape().getType() ) == "Sphere") {
+    const Sphere& sphere1 = static_cast<const Sphere&>(obj1_.getShape());
+    const Sphere& sphere2 = static_cast<const Sphere&>(obj2_.getShape());
+    double d = sqrt(pow(obj2_.getPosition().x - obj1_.getPosition().x, 2) + 
+                    pow(obj2_.getPosition().y - obj1_.getPosition().y, 2) + 
+                    pow(obj2_.getPosition().z - obj1_.getPosition().z, 2));
+
+    std::vector<double> d_vec_12 = {
+        obj2_.getPosition().x - obj1_.getPosition().x
+        ,obj2_.getPosition().y - obj1_.getPosition().y
+        ,obj2_.getPosition().z - obj1_.getPosition().z };
+
+        std::vector<double> direction_12(3, 0);
+
+        float r1 = sphere1.getRadius();
+        std::vector<double> r1_vec(3 , 0);
+
+        float r2 = sphere1.getRadius();
+        std::vector<double> r2_vec(3 , 0); 
+
+        //find the (point of intersection) (not reverted yet) between the 2 spheres.
+        //to find that we have a formula as follows
+        // r_Vec starts at the center of mass of the
+        
+        double coefficient_of_d = 0.5 + ((r1*r1 - r2*r2)/(2*(d*d)));
+        //ci represents the center of intersection when the objects have a shared infinitesimal volume.
+        double c1_ci = coefficient_of_d * d;
+        double revert_1 = r1 - c1_ci ; 
+
+        double c2_ci = d - c1_ci;
+        double revert_2 = r2 - c2_ci ;
+
+        std::vector<double> revert_Vec_1(3 , 1);
+        std::vector<double> revert_Vec_2(3 , 1);
+        //std::vector<double>dist_O1_Ci_ad(3 , 0);
+        // 1) finding the direction of d which is the normal direction n at contact point.
+        // 2) finding raduii as vectores in the direction n .
+
+        for (int i=0 ; i < 3 ; i++) {
+         direction_12[i] = d_vec_12[i] / d; //unit direction vector -> n
+         // the first sphere always wants to move in the opposite dierction of n 
+         // the seconf sphere always wants to move in the direction on n 
+         // this is the new vecor representing the center of each object
+         revert_Vec_1[i] = revert_1 * -1 * direction_12[i];
+         revert_Vec_2[i] = revert_2 * direction_12[i];
+        };
+
+        revert_Vec_1[3]=obj1_.getObjectId();
+        revert_Vec_2[3]=obj2_.getObjectId();
+
+        return {revert_Vec_1, revert_Vec_2};
+ }
 }
 
 
