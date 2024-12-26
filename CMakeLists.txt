@@ -1,23 +1,19 @@
 cmake_minimum_required(VERSION 3.10)
-#set(CMAKE_C_COMPILER "C:/msys64/ucrt64/bin/gcc.exe")
-#set(CMAKE_CXX_COMPILER "C:/msys64/ucrt64/bin/g++.exe")
-
 
 project (RosaSimulator VERSION 0.1)
 
 # ==== Compiler flags ====
 set(CMAKE_CXX_STANDARD 17) # gnu++-17
-# set(CMAKE_CXX_STANDARD_REQUIRED True)
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall") # Warn all
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g") # symbol info
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # produces compile_commands.json
 
 if (MSVC)
+    # Use /MT for static runtime or /MD for dynamic runtime
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")  # or /MD
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")  # or /MDd
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /Zi")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g")
 endif()
-
 
 # ==== Sanitizer ====
 if (NOT MSVC)
@@ -26,8 +22,6 @@ if (NOT MSVC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
     endif()
 endif()
-
-
 
 # ==== Clang tidy ====
 
