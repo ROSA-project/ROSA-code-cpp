@@ -12,7 +12,13 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")  # or /MDd
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /Zi")
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g")
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        # Clang-specific flags
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -g")
+    else()
+        # Other compilers (e.g., GCC)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g")
+    endif()
 endif()
 
 # ==== Sanitizer ====
@@ -23,6 +29,11 @@ if (NOT MSVC)
     endif()
 endif()
 
+# Check for clang and set specific flags
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    message(STATUS "Using Clang compiler")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-unused-variable")
+endif()
 # ==== Clang tidy ====
 
 find_program(CLANG_TIDY_COMMAND NAMES clang-tidy)
