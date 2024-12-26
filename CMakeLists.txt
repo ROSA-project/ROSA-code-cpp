@@ -8,16 +8,23 @@ project (RosaSimulator VERSION 0.1)
 # ==== Compiler flags ====
 set(CMAKE_CXX_STANDARD 17) # gnu++-17
 # set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall") # Warn all
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g") # symbol info
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall") # Warn all
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g") # symbol info
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # produces compile_commands.json
+
+if (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /Zi")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g")
+endif()
 
 
 # ==== Sanitizer ====
-
-if (ADDR_SANITIZER GREATER 0)
-    message(STATUS "--- ADDRESS SANITIZER: Enabled ---")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+if (NOT MSVC)
+    if (ADDR_SANITIZER GREATER 0)
+        message(STATUS "--- ADDRESS SANITIZER: Enabled ---")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+    endif()
 endif()
 
 
