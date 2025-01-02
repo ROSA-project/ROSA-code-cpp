@@ -112,7 +112,7 @@ Object::ObjectMap VacuumCleaner::evolve(float delta_t) {
         updatePosition(new_position);
         sensor_->updatePosition(new_position);
 
-    // print("x=" + str(self.position.x) + " ," + "y=" + str(self.position.y) + " ," + \
+    // print("x=" + str(self.position.x) + " ," + "y=" + str(self.position.y) + " ," + 
     //    "phi=" + str(self.position.phi))
     }
     totalElapsedTimeSec_ += delta_t;

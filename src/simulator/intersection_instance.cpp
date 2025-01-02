@@ -60,9 +60,13 @@ double IntersectionInstance::intersect() {
         // we can not do any ting external in one function specially when you're working with object oriented programming and classes :)) yup ?
         return (v_cap1 + v_cap2 );      
     }
+
+    return 0.0;
 }
 
 std::pair<std::vector<double>, std::vector<double>> IntersectionInstance::reversion(){
+    std::vector<double> revert_Vec_1(3 , 0);
+    std::vector<double> revert_Vec_2(3 , 0);
  if( (obj1_.getShape().getType() ) == "Sphere" && ( obj2_.getShape().getType() ) == "Sphere") {
     const Sphere& sphere1 = static_cast<const Sphere&>(obj1_.getShape());
     const Sphere& sphere2 = static_cast<const Sphere&>(obj2_.getShape());
@@ -80,7 +84,7 @@ std::pair<std::vector<double>, std::vector<double>> IntersectionInstance::revers
         float r1 = sphere1.getRadius();
         std::vector<double> r1_vec(3 , 0);
 
-        float r2 = sphere1.getRadius();
+        float r2 = sphere2.getRadius();
         std::vector<double> r2_vec(3 , 0); 
 
         //find the (point of intersection) (not reverted yet) between the 2 spheres.
@@ -94,9 +98,6 @@ std::pair<std::vector<double>, std::vector<double>> IntersectionInstance::revers
 
         double c2_ci = d - c1_ci;
         double revert_2 = r2 - c2_ci ;
-
-        std::vector<double> revert_Vec_1(3 , 1);
-        std::vector<double> revert_Vec_2(3 , 1);
         //std::vector<double>dist_O1_Ci_ad(3 , 0);
         // 1) finding the direction of d which is the normal direction n at contact point.
         // 2) finding raduii as vectores in the direction n .
@@ -112,11 +113,10 @@ std::pair<std::vector<double>, std::vector<double>> IntersectionInstance::revers
 
         revert_Vec_1[3]=obj1_.getObjectId();
         revert_Vec_2[3]=obj2_.getObjectId();
-
+        }
         return {revert_Vec_1, revert_Vec_2};
- }
+ 
 }
-
 
 
 }// namespace rosa
