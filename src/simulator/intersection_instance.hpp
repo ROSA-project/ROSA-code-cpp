@@ -14,7 +14,6 @@ namespace rosa {
 class IntersectionInstance {
 public:
     IntersectionInstance(const Object& obj1, const Object& obj2);
-
     /**
      * The entry point for performing the intersection algorithm on its two objects.
      */
