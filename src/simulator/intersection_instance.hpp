@@ -4,6 +4,7 @@
 #include "object.hpp"
 #include <vector>
 #include <utility>
+#include "position.hpp"
 
 namespace rosa {
 
@@ -31,9 +32,10 @@ public:
         return isInfinitesimal_;
     }
 
-    const std::vector<Position>& getIntersectionPoint() {
-        rosa_assert(intersectionPoints_.size() > 0, "no intersection recorded.");
-        return intersectionPoints_;
+    Position IntersectionPoint(const Object& obj1, const Object& obj2) {}
+    const Position getIntersectionPoint() {
+        // rosa_assert(intersectionPoints_.size() > 0, "no intersection recorded.");
+        return intersectionPoint_;
     }
 
 private:
@@ -41,7 +43,7 @@ private:
     const Object& obj2_;
     bool doesIntersect_{false};
     bool isInfinitesimal_{false};
-    std::vector<Position> intersectionPoints_; // TODO: not sure about the type of this
+    Position intersectionPoint_; // TODO: not sure about the type of this
 };
 
 } // namespace rosa

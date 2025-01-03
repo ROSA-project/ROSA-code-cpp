@@ -65,7 +65,6 @@ double IntersectionInstance::intersect() {
 std::pair<std::vector<double>, std::vector<double>> IntersectionInstance::reversion(){
     std::vector<double> revert_Vec_1(3 , 0);
     std::vector<double> revert_Vec_2(3 , 0);
-
  if( (obj1_.getShape().getType() ) == "Sphere" && ( obj2_.getShape().getType() ) == "Sphere") {
     const Sphere& sphere1 = static_cast<const Sphere&>(obj1_.getShape());
     const Sphere& sphere2 = static_cast<const Sphere&>(obj2_.getShape());
@@ -90,6 +89,7 @@ std::pair<std::vector<double>, std::vector<double>> IntersectionInstance::revers
 
     for (int i=0 ; i < 3 ; i++) {
     direction_12[i] = d_vec_12[i] / d; //unit direction vector -> points in n
+
     // the first sphere always wants to move in the opposite dierction of n 
     // the second sphere always wants to move in the direction on n 
     revert_Vec_1[i] = revert_1 * -1 * direction_12[i];
