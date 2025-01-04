@@ -46,21 +46,24 @@ void Object::setIntersections(
     // TODO: do we need to copy the intersections here?
     latestIntersections_ = intersections;
     infinitesimalIntersectionOccured_ = false;
+    std::vector<double> revert(3,1);
     for (auto& in_in: latestIntersections_) {
         if (in_in->doesIntersect() && in_in->isInfinitesimal()) {
             infinitesimalIntersectionOccured_ = true;
+           auto [rev1, rev2] = in_in->reversion();
+           revert = (rev1[3] == oid_) ? rev1 : rev2;
         }
     }
 
     if (infinitesimalIntersectionOccured_) {
-        infinitesimalIntersectionImmediate();
+        infinitesimalIntersectionImmediate(revert);
     }
 }
 
-void Object::infinitesimalIntersectionImmediate() {
+void Object::infinitesimalIntersectionImmediate(const std::vector<double>& revert) {
     // logger.Logger.add_line("infinitestimal intersection detected, reverting position
     // (default Object behavior)")
-    revertPosition();
+    revertPosition(revert);
 }
 
 void Object::updatePosition(const Position& new_position) {
@@ -68,11 +71,13 @@ void Object::updatePosition(const Position& new_position) {
     position_ = new_position;
 }
 
-void Object::revertPosition() {
+void Object::revertPosition(const std::vector<double>& revert) {
     // TODO leaves the position and previous position the same.
     // better to somehow invalidate previous position? (same should happen in
     // constructor where these two are again the same)
-    position_ = previousPosition_;
+    position_.x = revert[0];
+    position_.y = revert[1];
+    position_.z = revert[2];
 }
 
 float Object::getRequiredDeltaT() const { return 0; }

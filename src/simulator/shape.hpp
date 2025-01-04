@@ -3,6 +3,7 @@
 #include "nlohmann/json.hpp"
 #include "position.hpp"
 #include <memory>
+#include <string>
 
 namespace rosa {
 
@@ -19,7 +20,7 @@ public:
      * @return A shred pointer to the resulting enclosing box
      */
     virtual std::shared_ptr<Box> boundingBox(const Position& position) = 0;
-
+    virtual std::string getType() const = 0;
     virtual bool isShapeless() const = 0;
 
     virtual nlohmann::json toJson() const = 0;

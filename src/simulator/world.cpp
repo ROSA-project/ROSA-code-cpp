@@ -8,6 +8,7 @@
 #include <ctime>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 namespace rosa {
 
@@ -72,7 +73,7 @@ std::pair<World::InInType, bool> World::intersect() {
             auto instance =
                 new IntersectionInstance(*(it1->second.get()), *(it2->second.get()));
             std::shared_ptr<IntersectionInstance> in_in(instance);
-            // instance has to be added for both objects
+            // instance has to be added for both objects , why ?!
             result[it1->first].push_back(in_in);
             result[it2->first].push_back(in_in);
             if (in_in->doesIntersect()) {
@@ -82,6 +83,11 @@ std::pair<World::InInType, bool> World::intersect() {
                     // decide later.
                     non_infinitesimal_intersect = true;
                 }
+                // if infinitesimal_intersect has ocurred , revert positions
+
+            //    auto [rev1, rev2] = in_in->reversion();
+            //    it1->second->revertPosition(rev1);
+            //    it2->second->revertPosition(rev2);
             }
         }
         // TODO: break here? this function may require a restructuring.

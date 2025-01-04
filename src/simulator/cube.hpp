@@ -22,6 +22,8 @@ public:
 
     std::shared_ptr<Box> boundingBox(const Position& position) override;
 
+    std::string getType() const override {return "Cube";}
+
     bool isShapeless() const override { return false; }
 
     nlohmann::json toJson() const override {

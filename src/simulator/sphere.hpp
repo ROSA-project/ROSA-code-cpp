@@ -3,6 +3,7 @@
 #include "common/util.hpp"
 #include "shape.hpp"
 #include <memory>
+#include <string>
 
 namespace rosa {
 
@@ -18,6 +19,8 @@ public:
 
     std::shared_ptr<Box> boundingBox(const Position& position) override;
 
+    std::string getType() const override {return "Sphere";}
+    
     bool isShapeless() const override { return false; }
 
     nlohmann::json toJson() const override {
