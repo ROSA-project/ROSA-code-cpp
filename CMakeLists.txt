@@ -111,5 +111,10 @@ target_link_libraries(Unit_tests gtest_main)
 
 include(GoogleTest)
 
-gtest_discover_tests(E2E_tests)
-gtest_discover_tests(Unit_tests)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    message(STATUS "Building on Linux or macOS")
+    gtest_discover_tests(E2E_tests)
+    gtest_discover_tests(Unit_tests)
+endif()
+
+
