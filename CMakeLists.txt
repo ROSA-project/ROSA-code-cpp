@@ -61,9 +61,9 @@ include_directories("${PROJECT_BINARY_DIR}"
 
 set(ROOT_SIM ${PROJECT_SOURCE_DIR}/src/simulator)
 
-# set(E2E_TEST_SRC
-#     ${PROJECT_SOURCE_DIR}/src/e2e-tests/freespace_motion_test.cpp    
-# )
+set(E2E_TEST_SRC
+    ${PROJECT_SOURCE_DIR}/src/e2e-tests/freespace_motion_test.cpp    
+)
 
 set(UNIT_TEST_SRC
     ${PROJECT_SOURCE_DIR}/src/unit-tests/test_intersection.cpp
@@ -87,18 +87,17 @@ set(SIM_SRC
 enable_testing()
 
 add_executable(RosaSimulator ${SIM_SRC} ${ROOT_SIM}/run_simulator.cpp)
-# add_executable(E2E_tests ${E2E_TEST_SRC} ${SIM_SRC})
+add_executable(E2E_tests ${E2E_TEST_SRC} ${SIM_SRC})
 add_executable(Unit_tests ${UNIT_TEST_SRC} ${SIM_SRC})
 
 target_include_directories(RosaSimulator PUBLIC "src/simulator" )
-#target_include_directories(E2E_tests PUBLIC "src/simulator" )
+target_include_directories(E2E_tests PUBLIC "src/simulator" )
 target_include_directories(Unit_tests PUBLIC "src/simulator" )
 
-# target_link_libraries(E2E_tests gtest_main)
+target_link_libraries(E2E_tests gtest_main)
 target_link_libraries(Unit_tests gtest_main)
 
 include(GoogleTest)
 
-# gtest_discover_tests(E2E_tests)
+gtest_discover_tests(E2E_tests)
 gtest_discover_tests(Unit_tests)
-
