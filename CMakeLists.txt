@@ -1,27 +1,39 @@
 cmake_minimum_required(VERSION 3.10)
-#set(CMAKE_C_COMPILER "C:/msys64/ucrt64/bin/gcc.exe")
-#set(CMAKE_CXX_COMPILER "C:/msys64/ucrt64/bin/g++.exe")
-
 
 project (RosaSimulator VERSION 0.1)
 
 # ==== Compiler flags ====
 set(CMAKE_CXX_STANDARD 17) # gnu++-17
-# set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall") # Warn all
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g") # symbol info
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # produces compile_commands.json
 
-
-# ==== Sanitizer ====
-
-if (ADDR_SANITIZER GREATER 0)
-    message(STATUS "--- ADDRESS SANITIZER: Enabled ---")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+if (MSVC)
+    # Use /MT for static runtime or /MD for dynamic runtime
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")  # or /MD
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")  # or /MDd
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /Zi")
+else()
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        # Clang-specific flags
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -g")
+    else()
+        # Other compilers (e.g., GCC)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g")
+    endif()
 endif()
 
+# ==== Sanitizer ====
+if (NOT MSVC)
+    if (ADDR_SANITIZER GREATER 0)
+        message(STATUS "--- ADDRESS SANITIZER: Enabled ---")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+    endif()
+endif()
 
-
+# Check for clang and set specific flags
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    message(STATUS "Using Clang compiler")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-unused-variable")
+endif()
 # ==== Clang tidy ====
 
 find_program(CLANG_TIDY_COMMAND NAMES clang-tidy)
@@ -99,5 +111,10 @@ target_link_libraries(Unit_tests gtest_main)
 
 include(GoogleTest)
 
-gtest_discover_tests(E2E_tests)
-gtest_discover_tests(Unit_tests)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    message(STATUS "Building on Linux or macOS")
+    gtest_discover_tests(E2E_tests)
+    gtest_discover_tests(Unit_tests)
+endif()
+
+
