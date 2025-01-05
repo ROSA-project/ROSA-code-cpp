@@ -54,7 +54,14 @@ else()
     )
 endif()
 
-## google test
+# ==== Eigen3 ====
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+include_directories(${EIGEN3_INCLUDE_DIR})
+# Link Eigen3 to the targets
+
+
+# === GoogleTest ===
+
 # Add GoogleTest as a subdirectory
 add_subdirectory(external_deps/googletest)
 
@@ -108,6 +115,10 @@ target_include_directories(Unit_tests PUBLIC "src/simulator" )
 
 target_link_libraries(E2E_tests gtest_main)
 target_link_libraries(Unit_tests gtest_main)
+
+target_link_libraries(RosaSimulator Eigen3::Eigen)
+target_link_libraries(E2E_tests Eigen3::Eigen)
+target_link_libraries(Unit_tests Eigen3::Eigen)
 
 include(GoogleTest)
 

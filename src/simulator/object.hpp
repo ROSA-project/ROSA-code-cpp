@@ -75,7 +75,7 @@ public:
     /**
      * By default, we revert the position without reverting the rest of the state
      */
-    void infinitesimalIntersectionImmediate(const std::vector<double>& p);
+    void infinitesimalIntersectionImmediate(const Eigen::Vector3d& p);
 
     /**
      * All changes to the position must go through this function.
@@ -88,7 +88,7 @@ public:
      * better to somehow invalidate previous position? (same should happen in
      * constructor where these two are again the same)
      */
-    void revertPosition(const std::vector<double>& p);
+    void revertPosition(const Eigen::Vector3d& p);
 
     // def visualize(self) -> list:
     //     """

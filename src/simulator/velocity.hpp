@@ -27,10 +27,6 @@ struct Velocity {
         j.at("omega").get_to(omega);
       
     }
-
-
-
-
 };
 
 // struct State {

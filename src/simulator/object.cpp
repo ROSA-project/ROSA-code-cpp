@@ -2,6 +2,7 @@
 #include "common/logger.hpp"
 #include "intersection_instance.hpp"
 #include "object_registry.hpp"
+#include <Eigen/Dense>
 
 namespace rosa {
 
@@ -46,24 +47,25 @@ void Object::setIntersections(
     // TODO: do we need to copy the intersections here?
     latestIntersections_ = intersections;
     infinitesimalIntersectionOccured_ = false;
-    std::vector<double> revert(3,1);
+    Eigen::Vector3d revert = Eigen::Vector3d::Zero();
     for (auto& in_in: latestIntersections_) {
         if (in_in->doesIntersect() && in_in->isInfinitesimal()) {
             infinitesimalIntersectionOccured_ = true;
            auto [rev1, rev2] = in_in->reversion();
-           revert = (rev1[3] == oid_) ? rev1 : rev2;
+           revert = (rev1.second == oid_) ? rev1.first : rev2.first;
         }
     }
-
+     
     if (infinitesimalIntersectionOccured_) {
         infinitesimalIntersectionImmediate(revert);
     }
 }
 
-void Object::infinitesimalIntersectionImmediate(const std::vector<double>& revert) {
+void Object::infinitesimalIntersectionImmediate(const Eigen::Vector3d& revert) {
     // logger.Logger.add_line("infinitestimal intersection detected, reverting position
     // (default Object behavior)")
     revertPosition(revert);
+    // in_in->contactPoint();
 }
 
 void Object::updatePosition(const Position& new_position) {
@@ -71,13 +73,13 @@ void Object::updatePosition(const Position& new_position) {
     position_ = new_position;
 }
 
-void Object::revertPosition(const std::vector<double>& revert) {
+void Object::revertPosition(const Eigen::Vector3d& revert) {
     // TODO leaves the position and previous position the same.
     // better to somehow invalidate previous position? (same should happen in
     // constructor where these two are again the same)
-    position_.x = revert[0];
-    position_.y = revert[1];
-    position_.z = revert[2];
+    position_.x = revert(0);
+    position_.y = revert(1);
+    position_.z = revert(2);
 }
 
 float Object::getRequiredDeltaT() const { return 0; }

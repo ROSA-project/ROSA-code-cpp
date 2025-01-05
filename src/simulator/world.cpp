@@ -83,11 +83,6 @@ std::pair<World::InInType, bool> World::intersect() {
                     // decide later.
                     non_infinitesimal_intersect = true;
                 }
-                // if infinitesimal_intersect has ocurred , revert positions
-
-            //    auto [rev1, rev2] = in_in->reversion();
-            //    it1->second->revertPosition(rev1);
-            //    it2->second->revertPosition(rev2);
             }
         }
         // TODO: break here? this function may require a restructuring.

@@ -24,8 +24,8 @@ struct Position {
         , j(j)
         , k(k){};
 
-    double distance(const Position& p) {
-        return sqrt(pow(x - p.x , 2) + pow(y - p.y , 2) + pow(z - p.z , 2));
+    double distance(const Position& p) const {
+        return sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) + (z - p.z) * (z - p.z));
     }
 
     // static std::tuple<float, float, float>

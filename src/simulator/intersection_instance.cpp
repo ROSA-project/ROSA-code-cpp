@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cmath>  
 #include <algorithm>
-#include <vector>
+#include <Eigen/Dense>
 #include <functional>
 #include <utility>
 #include "sphere.hpp"
@@ -27,10 +27,7 @@ double IntersectionInstance::intersect() {
         const Sphere& sphere1 = static_cast<const Sphere&>(obj1_.getShape());
         const Sphere& sphere2 = static_cast<const Sphere&>(obj2_.getShape());
 
-        double d = sqrt(pow(obj2_.getPosition().x - obj1_.getPosition().x, 2) + 
-                        pow(obj2_.getPosition().y - obj1_.getPosition().y, 2) + 
-                        pow(obj2_.getPosition().z - obj1_.getPosition().z, 2));   
-
+        double d = obj1_.getPosition().distance(obj2_.getPosition());  
         if ( (sphere1.getRadius() + sphere2.getRadius()) <= d) {
             return 0.0;
             }
@@ -62,45 +59,34 @@ double IntersectionInstance::intersect() {
     return 0.0;
 }
 
-std::pair<std::vector<double>, std::vector<double>> IntersectionInstance::reversion(){
-    std::vector<double> revert_Vec_1(3 , 0);
-    std::vector<double> revert_Vec_2(3 , 0);
+std::pair<std::pair<Eigen::Vector3d, int>, std::pair<Eigen::Vector3d, int>> IntersectionInstance::reversion(){
+    std::pair<Eigen::Vector3d, int> revert_1 = { Eigen::Vector3d::Zero() , obj1_.getObjectId() };
+    std::pair<Eigen::Vector3d, int> revert_2 = { Eigen::Vector3d::Zero() , obj2_.getObjectId() };
  if( (obj1_.getShape().getType() ) == "Sphere" && ( obj2_.getShape().getType() ) == "Sphere") {
     const Sphere& sphere1 = static_cast<const Sphere&>(obj1_.getShape());
     const Sphere& sphere2 = static_cast<const Sphere&>(obj2_.getShape());
-    double d = sqrt(pow(obj2_.getPosition().x - obj1_.getPosition().x, 2) + 
-                    pow(obj2_.getPosition().y - obj1_.getPosition().y, 2) + 
-                    pow(obj2_.getPosition().z - obj1_.getPosition().z, 2));
 
-    std::vector<double> d_vec_12 = {
-        obj2_.getPosition().x - obj1_.getPosition().x
-        ,obj2_.getPosition().y - obj1_.getPosition().y
-        ,obj2_.getPosition().z - obj1_.getPosition().z };
+    double d = obj1_.getPosition().distance(obj2_.getPosition());
+   
+    Eigen::Vector3d normal_dir(
+        (obj2_.getPosition().x - obj1_.getPosition().x) /d,
+        (obj2_.getPosition().y - obj1_.getPosition().y) /d,
+        (obj2_.getPosition().z - obj1_.getPosition().z)/d);
 
-    std::vector<double> direction_12(3, 0);
-    //find the (point of intersection) (not reverted yet) between the 2 spheres.
+    // Eigen::Vector3d direction_12 = Eigen::Vector3d::Zero();
     double coefficient_of_d = 0.5 + ((sphere1.getRadius()*sphere1.getRadius() - sphere2.getRadius()*sphere2.getRadius())/(2*(d*d)));
-    //ci represents the center of intersection when the objects have a shared infinitesimal volume.
-    double c1_ci = coefficient_of_d * d;
-    double revert_1 = sphere1.getRadius() - c1_ci ; 
+    //coefficient_of_d * d = c1 distance to ci which represents the center of intersection when the objects have a shared infinitesimal volume.
+    double revert_coefficient_1 = -1 * (sphere1.getRadius() - (coefficient_of_d * d)); 
+    // d - coefficient_of_d * d = c2 distance to ci 
+    double revert_coefficient_2 = sphere2.getRadius() - (d - (coefficient_of_d * d));
 
-    double c2_ci = d - c1_ci;
-    double revert_2 = sphere2.getRadius() - c2_ci ;
-
-    for (int i=0 ; i < 3 ; i++) {
-    direction_12[i] = d_vec_12[i] / d; //unit direction vector -> points in n
-
-    // the first sphere always wants to move in the opposite dierction of n 
-    // the second sphere always wants to move in the direction on n 
-    revert_Vec_1[i] = revert_1 * -1 * direction_12[i];
-    revert_Vec_2[i] = revert_2 * direction_12[i];
-    };
-
-    revert_Vec_1[3]=obj1_.getObjectId();
-    revert_Vec_2[3]=obj2_.getObjectId();
+    revert_1.first = revert_coefficient_1 * normal_dir;
+    revert_2.first = revert_coefficient_2 * normal_dir;
     }
-    return {revert_Vec_1, revert_Vec_2};
+    return {revert_1, revert_2};
 }
+
+
 
 
 }// namespace rosa
